@@ -1,21 +1,29 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync, rmSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { rm } from "node:fs/promises";
-import { join, resolve } from "node:path";
+import { dirname, join } from "node:path";
 import { createRequire } from "node:module";
 import { Runtime } from "../dist/runtime.js";
 import { parseConfig } from "../dist/config.js";
 import { makeTools } from "../dist/tools.js";
+import { windowsArgv } from "../dist/windows.js";
 import { context, approve } from "./helpers.mjs";
 
 const require = createRequire(import.meta.url);
 for (const transport of ["native", "serve", "cli"]) test(`Windows ${transport}: private tools, review acceptance and rollback`, { skip: process.platform !== "win32", timeout: 180000 }, async () => {
   const root = mkdtempSync(join(tmpdir(), "deveco-windows-"));
   const project = join(root, "project"); mkdirSync(project);
+  const policy = join(root, "policy.toml");
+  const readRoots = [".", ...new Set([
+    windowsArgv(["test", "-e", "."])[0],
+    windowsArgv(["bash", "-c", ""])[0],
+    windowsArgv(["rg"])[0],
+  ].map(dirname))];
+  writeFileSync(policy, `[filesystem]\nread = ${JSON.stringify(readRoots)}\nwrite = ["."]\n[network]\nmode = "allow_audit"\n`);
   writeFileSync(join(project, "original.txt"), "original\n");
-  const rt = new Runtime(project, parseConfig({ transport, bin: require("deltabox-lite").binaryPath(), policy: resolve(".local/windows-policy.toml"), stateDir: join(root,"state"), runtimeDir: join(root,"runtime"), filesystem: {mode:"cbcow-private",require:true} }), { parent: async()=>undefined, notify: async()=>{} });
+  const rt = new Runtime(project, parseConfig({ transport, bin: require("deltabox-lite").binaryPath(), policy, stateDir: join(root,"state"), runtimeDir: join(root,"runtime"), filesystem: {mode:"cbcow-private",require:true} }), { parent: async()=>undefined, notify: async()=>{} });
   const tools=makeTools(()=>rt), ctx=context();
   try {
     await tools.write.execute({filePath:"空 格 ' $;.txt",content:"draft\n"},ctx);

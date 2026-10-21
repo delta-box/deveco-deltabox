@@ -18,6 +18,7 @@
     "host/*.md",
     "README.md",
     "README.zh-CN.md",
+    "WINDOWS.md",
     "host/UPSTREAM-LICENSE"
   ],
   "bin": {
