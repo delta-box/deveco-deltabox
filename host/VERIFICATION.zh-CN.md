@@ -45,7 +45,11 @@
 
 已观察到新建文件的绿色新增行、编辑文件的红绿差异、补丁卡片、Shell 卡片，以及专用“审核修改”面板。面板显示文件数、审核模式和逐文件增删摘要，操作为“接受 / 回滚”，等待时显示“等待审核”。浏览器点击“接受”后核对三个文件均已提交；下一轮点击“回滚”后核对该轮文件不存在，之前接受的文件保留，会话恢复 idle。
 
-截图和完整测试日志为本地验证产物，不随源码发布。
+以下截图展示已验证的审核界面定制前后效果。完整测试日志保留在本地。
+
+| 修改前 | 修改后 |
+| --- | --- |
+| ![通用权限提示](https://raw.githubusercontent.com/delta-box/deveco-deltabox/main/docs/images/deltabox-review-before.png) | ![包含接受和回滚操作的 Deltabox 审核界面](https://raw.githubusercontent.com/delta-box/deveco-deltabox/main/docs/images/deltabox-review-after.png) |
 
 浏览器夹具仅替换测试标签页对产品协议状态的只读查询，不调用协议接受接口，不修改用户协议状态或全局配置。没有使用外部模型账号。TUI 完成类型检查和编译；交互点击验证在 Web UI 上进行。
 

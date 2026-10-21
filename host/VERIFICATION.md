@@ -45,7 +45,11 @@ A real host and Web development page were started in an isolated temporary proje
 
 Observed UI elements included green added lines for new files, red/green diffs for edited files, patch cards, shell cards, and the dedicated review panel. The panel displayed the file count, review mode, and per-file addition/deletion summaries. The tested Chinese UI used “审核修改” (Review changes), “接受 / 回滚” (Accept / Roll back), and “等待审核” (Waiting for review). Accepting in the browser committed all three files. Rolling back the next turn removed that turn's file, preserved the previously accepted files, and returned the session to idle.
 
-Screenshots and complete test logs are local validation artifacts and are not distributed with the source.
+The screenshots below show the tested review UI before and after customization. Complete test logs remain local.
+
+| Before | After |
+| --- | --- |
+| ![Generic permission prompt](https://raw.githubusercontent.com/delta-box/deveco-deltabox/main/docs/images/deltabox-review-before.png) | ![Deltabox review with Accept and Roll back actions](https://raw.githubusercontent.com/delta-box/deveco-deltabox/main/docs/images/deltabox-review-after.png) |
 
 The browser fixture replaced only the test tab's read-only product agreement status query. It did not call the agreement acceptance endpoint or change the user's agreement state or global configuration. No external model account was used. The TUI passed type checking and compilation; interactive validation was performed in the Web UI.
 
