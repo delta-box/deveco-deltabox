@@ -1,0 +1,875 @@
+diff --git a/packages/app/src/i18n/en.ts b/packages/app/src/i18n/en.ts
+index 28eb114..51714ad 100644
+--- a/packages/app/src/i18n/en.ts
++++ b/packages/app/src/i18n/en.ts
+@@ -574,6 +574,20 @@ export const dict = {
+   "error.chain.configInvalid": "Config file at {{path}} is invalid",
+   "error.chain.configInvalidWithMessage": "Config file at {{path}} is invalid: {{message}}",
+ 
++  "permission.deltabox.title": "Review changes",
++  "permission.deltabox.waiting": "Waiting for review",
++  "permission.deltabox.accept": "Accept",
++  "permission.deltabox.rollback": "Roll back",
++  "permission.deltabox.files": "Files to review: {{count}}",
++  "permission.deltabox.description": "Accept keeps all changes in this review. Roll back restores the state before these changes.",
++  "permission.deltabox.binary": "Binary",
++  "permission.deltabox.mode.task": "At the end of the task",
++  "permission.deltabox.mode.tool": "After each modifying tool",
++  "permission.deltabox.mode.risky": "After each risky tool",
++  "permission.deltabox.kind.added": "Added",
++  "permission.deltabox.kind.modified": "Modified",
++  "permission.deltabox.kind.deleted": "Deleted",
++
+   "notification.permission.title": "Permission required",
+   "notification.permission.description": "{{sessionTitle}} in {{projectName}} needs permission",
+   "notification.question.title": "Question",
+diff --git a/packages/app/src/i18n/zh.ts b/packages/app/src/i18n/zh.ts
+index 7a60692..faf4452 100644
+--- a/packages/app/src/i18n/zh.ts
++++ b/packages/app/src/i18n/zh.ts
+@@ -492,6 +492,20 @@ export const dict = {
+   "error.chain.configInvalid": "配置文件 {{path}} 无效",
+   "error.chain.configInvalidWithMessage": "配置文件 {{path}} 无效：{{message}}",
+ 
++  "permission.deltabox.title": "审核修改",
++  "permission.deltabox.waiting": "等待审核",
++  "permission.deltabox.accept": "接受",
++  "permission.deltabox.rollback": "回滚",
++  "permission.deltabox.files": "{{count}} 个文件待审核",
++  "permission.deltabox.description": "接受将保留本次待审核的全部修改；回滚将恢复到这些修改之前。",
++  "permission.deltabox.binary": "二进制",
++  "permission.deltabox.mode.task": "任务结束后审核",
++  "permission.deltabox.mode.tool": "修改工具执行后审核",
++  "permission.deltabox.mode.risky": "风险工具执行后审核",
++  "permission.deltabox.kind.added": "新增",
++  "permission.deltabox.kind.modified": "修改",
++  "permission.deltabox.kind.deleted": "删除",
++
+   "notification.permission.title": "需要权限",
+   "notification.permission.description": "{{sessionTitle}}（{{projectName}}）需要权限",
+   "notification.question.title": "问题",
+diff --git a/packages/app/src/pages/session/composer/session-permission-dock.tsx b/packages/app/src/pages/session/composer/session-permission-dock.tsx
+index 06ff4f4..7f6a0f2 100644
+--- a/packages/app/src/pages/session/composer/session-permission-dock.tsx
++++ b/packages/app/src/pages/session/composer/session-permission-dock.tsx
+@@ -1,4 +1,5 @@
+-import { For, Show } from "solid-js"
++import { createMemo, For, Show } from "solid-js"
++import { deltaboxReview } from "@opencode-ai/core/util/deltabox-review"
+ import type { PermissionRequest } from "@opencode-ai/sdk/v2"
+ import { Button } from "@opencode-ai/ui/button"
+ import { DockPrompt } from "@opencode-ai/ui/dock-prompt"
+@@ -11,6 +12,9 @@ export function SessionPermissionDock(props: {
+   onDecide: (response: "once" | "always" | "reject") => void
+ }) {
+   const language = useLanguage()
++  const review = createMemo(() =>
++    props.request.permission === "deltabox_review" ? deltaboxReview(props.request.metadata) : undefined,
++  )
+ 
+   const toolDescription = () => {
+     const key = `settings.permissions.tool.${props.request.permission}.description`
+@@ -27,7 +31,9 @@ export function SessionPermissionDock(props: {
+           <span data-slot="permission-icon">
+             <Icon name="warning" size="normal" />
+           </span>
+-          <div data-slot="permission-header-title">{language.t("notification.permission.title")}</div>
++          <div data-slot="permission-header-title">
++            {review() ? language.t("permission.deltabox.title") : language.t("notification.permission.title")}
++          </div>
+         </div>
+       }
+       footer={
+@@ -35,31 +41,71 @@ export function SessionPermissionDock(props: {
+           <div />
+           <div data-slot="permission-footer-actions">
+             <Button variant="ghost" size="normal" onClick={() => props.onDecide("reject")} disabled={props.responding}>
+-              {language.t("ui.permission.deny")}
+-            </Button>
+-            <Button
+-              variant="secondary"
+-              size="normal"
+-              onClick={() => props.onDecide("always")}
+-              disabled={props.responding}
+-            >
+-              {language.t("ui.permission.allowAlways")}
++              {review() ? language.t("permission.deltabox.rollback") : language.t("ui.permission.deny")}
+             </Button>
++            <Show when={!review()}>
++              <Button
++                variant="secondary"
++                size="normal"
++                onClick={() => props.onDecide("always")}
++                disabled={props.responding}
++              >
++                {language.t("ui.permission.allowAlways")}
++              </Button>
++            </Show>
+             <Button variant="primary" size="normal" onClick={() => props.onDecide("once")} disabled={props.responding}>
+-              {language.t("ui.permission.allowOnce")}
++              {review() ? language.t("permission.deltabox.accept") : language.t("ui.permission.allowOnce")}
+             </Button>
+           </div>
+         </>
+       }
+     >
+-      <Show when={toolDescription()}>
++      <Show when={review()}>
++        {(value) => (
++          <div data-slot="deltabox-review" class="flex flex-col gap-2 pb-4 pl-7 min-w-0">
++            <div class="text-12-regular text-text-weak">
++              {language.t("permission.deltabox.files", { count: value().count })}
++              {" · "}
++              {language.t(`permission.deltabox.mode.${value().mode}`)}
++            </div>
++            <ul
++              class="flex flex-col gap-2 max-h-48 overflow-y-auto min-w-0"
++              aria-label={language.t("permission.deltabox.files", { count: value().count })}
++            >
++              <For each={value().changes}>
++                {(change) => (
++                  <li class="flex items-start gap-3 text-12-regular min-w-0">
++                    <span class="text-text-weak shrink-0">{language.t(`permission.deltabox.kind.${change.kind}`)}</span>
++                    <code class="flex-1 min-w-0 break-all text-text-base">{change.path}</code>
++                    <span class="shrink-0 tabular-nums text-text-weak">
++                      <Show
++                        when={change.is_binary}
++                        fallback={
++                          <>
++                            <span class="text-text-diff-add-base">+{change.added_lines}</span>{" "}
++                            <span class="text-text-diff-delete-base">−{change.removed_lines}</span>
++                          </>
++                        }
++                      >
++                        {language.t("permission.deltabox.binary")}
++                      </Show>
++                    </span>
++                  </li>
++                )}
++              </For>
++            </ul>
++            <div class="text-12-regular text-text-weak">{language.t("permission.deltabox.description")}</div>
++          </div>
++        )}
++      </Show>
++      <Show when={!review() && toolDescription()}>
+         <div data-slot="permission-row">
+           <span data-slot="permission-spacer" aria-hidden="true" />
+           <div data-slot="permission-hint">{toolDescription()}</div>
+         </div>
+       </Show>
+ 
+-      <Show when={props.request.patterns.length > 0}>
++      <Show when={!review() && props.request.patterns.length > 0}>
+         <div data-slot="permission-row">
+           <span data-slot="permission-spacer" aria-hidden="true" />
+           <div data-slot="permission-patterns">
+diff --git a/packages/app/src/pages/session/timeline/message-timeline.tsx b/packages/app/src/pages/session/timeline/message-timeline.tsx
+index 5a26f17..3090eab 100644
+--- a/packages/app/src/pages/session/timeline/message-timeline.tsx
++++ b/packages/app/src/pages/session/timeline/message-timeline.tsx
+@@ -68,6 +68,7 @@ import { notifySessionTabsRemoved } from "@/components/titlebar-session-events"
+ import { messageAgentColor } from "@/utils/agent"
+ import { sessionTitle } from "@/utils/session-title"
+ import { makeTimer } from "@solid-primitives/timer"
++import { sessionPermissionRequest } from "../composer/session-request-tree"
+ import { scheduleConnectedMeasure } from "./measure"
+ import { createTimelineProjection } from "./projection"
+ import { MessageComment, SummaryDiff, TimelineRow, TimelineRowMap } from "./rows"
+@@ -125,13 +126,15 @@ const markBoundaryGesture = (input: {
+   }
+ }
+ 
+-function TimelineThinkingRow(props: { reasoningHeading?: string; showReasoningSummaries: boolean }) {
++function TimelineThinkingRow(props: { reasoningHeading?: string; showReasoningSummaries: boolean; awaitingReview: boolean }) {
+   const language = useLanguage()
+ 
+   return (
+     <div data-slot="session-turn-thinking">
+-      <TextShimmer text={language.t("ui.sessionTurn.status.thinking")} />
+-      <Show when={!props.showReasoningSummaries}>
++      <Show when={props.awaitingReview} fallback={<TextShimmer text={language.t("ui.sessionTurn.status.thinking")} />}>
++        <span>{language.t("permission.deltabox.waiting")}</span>
++      </Show>
++      <Show when={!props.awaitingReview && !props.showReasoningSummaries}>
+         <TextReveal text={props.reasoningHeading} class="session-turn-thinking-heading" travel={25} duration={700} />
+       </Show>
+     </div>
+@@ -277,6 +280,11 @@ export function MessageTimeline(props: {
+     return sync().data.session_status[id] ?? idle
+   })
+   const working = createMemo(() => sessionStatus().type !== "idle")
++  const awaitingReview = createMemo(() =>
++    !!sessionPermissionRequest(sync().data.session, sync().data.permission, sessionID(), (item) =>
++      item.permission === "deltabox_review",
++    ),
++  )
+   const sessionMessages = createMemo(() => (sessionID() ? (sync().data.message[sessionID()!] ?? []) : []))
+   const tint = createMemo(() => messageAgentColor(sessionMessages(), sync().data.agent))
+ 
+@@ -1126,6 +1134,7 @@ export function MessageTimeline(props: {
+           <TimelineRowFrame row={thinkingRow}>
+             <div data-slot="session-turn-message-container" class="w-full px-4 md:px-5">
+               <TimelineThinkingRow
++                awaitingReview={awaitingReview()}
+                 reasoningHeading={thinkingRow().reasoningHeading}
+                 showReasoningSummaries={settings.general.showReasoningSummaries()}
+               />
+diff --git a/packages/opencode/src/effect/bridge.ts b/packages/opencode/src/effect/bridge.ts
+index 9c09fcb..200ea38 100644
+--- a/packages/opencode/src/effect/bridge.ts
++++ b/packages/opencode/src/effect/bridge.ts
+@@ -5,7 +5,7 @@ import { InstanceRef, WorkspaceRef } from "./instance-ref"
+ import { attachWith } from "./run-service"
+ 
+ export interface Shape {
+-  readonly promise: <A, E, R>(effect: Effect.Effect<A, E, R>) => Promise<A>
++  readonly promise: <A, E, R>(effect: Effect.Effect<A, E, R>, options?: { signal?: AbortSignal }) => Promise<A>
+   readonly fork: <A, E, R>(effect: Effect.Effect<A, E, R>) => Fiber.Fiber<A, E>
+   readonly run: <A, E, R>(effect: Effect.Effect<A, E, R>) => Effect.Effect<A, E>
+   readonly bind: <Args extends readonly unknown[], Result>(fn: (...args: Args) => Result) => (...args: Args) => Result
+@@ -53,8 +53,8 @@ export function make(): Effect.Effect<Shape> {
+       attachWith(effect.pipe(Effect.provide(ctx)) as Effect.Effect<A, E, never>, { instance, workspace })
+ 
+     return {
+-      promise: <A, E, R>(effect: Effect.Effect<A, E, R>) =>
+-        restoreWorkspace(workspace, () => Effect.runPromise(wrap(effect))),
++      promise: <A, E, R>(effect: Effect.Effect<A, E, R>, options?: { signal?: AbortSignal }) =>
++        restoreWorkspace(workspace, () => Effect.runPromise(wrap(effect), options)),
+       fork: <A, E, R>(effect: Effect.Effect<A, E, R>) =>
+         restoreWorkspace(workspace, () => Effect.runFork(wrap(effect))),
+       run: <A, E, R>(effect: Effect.Effect<A, E, R>) =>
+diff --git a/packages/opencode/src/plugin/index.ts b/packages/opencode/src/plugin/index.ts
+index 0c4030e..41ad333 100644
+--- a/packages/opencode/src/plugin/index.ts
++++ b/packages/opencode/src/plugin/index.ts
+@@ -156,6 +156,7 @@ export const layer = Layer.effect(
+         const cfg = yield* config.get()
+         const input: PluginInput = {
+           client,
++          experimental_capabilities: { sessionStopping: 1, commandResult: 1, shellEnv: 1 },
+           project: ctx.project,
+           worktree: ctx.worktree,
+           directory: ctx.directory,
+diff --git a/packages/opencode/src/session/prompt.ts b/packages/opencode/src/session/prompt.ts
+index 96caa86..d3c5761 100644
+--- a/packages/opencode/src/session/prompt.ts
++++ b/packages/opencode/src/session/prompt.ts
+@@ -62,6 +62,7 @@ import { eq } from "drizzle-orm"
+ import { SessionTable } from "@opencode-ai/core/session/sql"
+ import { SessionReminders } from "./reminders"
+ import { SessionTools } from "./tools"
++import { SessionStopping } from "./stopping"
+ import { SessionAgentMode } from "./agent-mode/routing"
+ import { LLMEvent } from "@opencode-ai/llm"
+ 
+@@ -1527,8 +1528,15 @@ export const layer = Layer.effect(
+           continue
+         }
+ 
++        const result = yield* lastAssistant(sessionID)
++        yield* SessionStopping.run({ sessionID, messageID: result.info.id, agent: result.info.agent }).pipe(
++          Effect.provideService(Plugin.Service, plugin),
++          Effect.provideService(Permission.Service, permission),
++          Effect.provideService(Session.Service, sessions),
++          Effect.provideService(Agent.Service, agents),
++        )
+         yield* compaction.prune({ sessionID }).pipe(Effect.ignore, Effect.forkIn(scope))
+-        return yield* lastAssistant(sessionID)
++        return result
+       },
+     )
+ 
+@@ -1634,12 +1642,55 @@ export const layer = Layer.effect(
+           : yield* currentModel(input.sessionID)
+         : taskModel
+ 
+-      yield* plugin.trigger(
++      const commandOutput = yield* plugin.trigger(
+         "command.execute.before",
+         { command: input.command, sessionID: input.sessionID, arguments: input.arguments },
+-        { parts },
++        { parts, result: undefined as { text: string } | undefined },
+       )
+ 
++      if (commandOutput.result) {
++        const ctx = yield* InstanceState.context
++        const user = yield* promptImpl({
++          sessionID: input.sessionID,
++          messageID: input.messageID,
++          model: userModel,
++          agent: userAgent,
++          noReply: true,
++          parts: [{ type: "text", text: `/${input.command} ${input.arguments}`.trim() }],
++        })
++        const info: SessionV1.Assistant = {
++          id: MessageID.ascending(),
++          parentID: user.info.id,
++          sessionID: input.sessionID,
++          role: "assistant",
++          mode: userAgent,
++          agent: userAgent,
++          modelID: userModel.modelID,
++          providerID: userModel.providerID,
++          path: { cwd: ctx.directory, root: ctx.worktree },
++          cost: 0,
++          tokens: { input: 0, output: 0, reasoning: 0, cache: { read: 0, write: 0 } },
++          time: { created: Date.now(), completed: Date.now() },
++          finish: "stop",
++        }
++        yield* sessions.updateMessage(info)
++        const part: SessionV1.TextPart = {
++          id: PartID.ascending(),
++          messageID: info.id,
++          sessionID: input.sessionID,
++          type: "text",
++          text: commandOutput.result.text,
++        }
++        yield* sessions.updatePart(part)
++        yield* events.publish(Command.Event.Executed, {
++          name: input.command,
++          sessionID: input.sessionID,
++          arguments: input.arguments,
++          messageID: info.id,
++        })
++        return { info, parts: [part] }
++      }
++
+       const result = yield* Effect.gen(function* () {
+         if (!isDebugCommand)
+           return yield* promptImpl({
+diff --git a/packages/opencode/src/tool/registry.ts b/packages/opencode/src/tool/registry.ts
+index d8a912e..9d43f16 100644
+--- a/packages/opencode/src/tool/registry.ts
++++ b/packages/opencode/src/tool/registry.ts
+@@ -156,7 +156,18 @@ export const layer = Layer.effect(
+                 const bridge = yield* EffectBridge.make()
+                 const pluginCtx: PluginToolContext = {
+                   ...toolCtx,
+-                  ask: (req) => bridge.promise(toolCtx.ask(req)),
++                  ask: (req) => bridge.promise(toolCtx.ask(req), { signal: toolCtx.abort }),
++                  shellEnv: async (cwd) =>
++                    (
++                      await bridge.promise(
++                        plugin.trigger(
++                          "shell.env",
++                          { cwd, sessionID: toolCtx.sessionID, callID: toolCtx.callID },
++                          { env: {} as Record<string, string> },
++                        ),
++                        { signal: toolCtx.abort },
++                      )
++                    ).env,
+                   directory: ctx.directory,
+                   worktree: ctx.worktree,
+                 }
+@@ -284,7 +295,8 @@ export const layer = Layer.effect(
+ 
+     const all: Interface["all"] = Effect.fn("ToolRegistry.all")(function* () {
+       const s = yield* InstanceState.get(state)
+-      return [...s.builtin, ...s.custom] as Tool.Def[]
++      // All callers (including debug tooling) must select the same override.
++      return [...new Map([...s.builtin, ...s.custom].map((tool) => [tool.id, tool])).values()]
+     })
+ 
+     const ids: Interface["ids"] = Effect.fn("ToolRegistry.ids")(function* () {
+@@ -316,6 +328,9 @@ export const layer = Layer.effect(
+ 
+         const usePatch =
+           input.modelID.includes("gpt-") && !input.modelID.includes("oss") && !input.modelID.includes("gpt-4")
++        // Model-specific preferences apply to built-ins. Plugins own the
++        // schemas and capabilities of their replacement file tools.
++        if (tool.source === "custom") return true
+         if (tool.id === ApplyPatchTool.id) return usePatch
+         if (tool.id === EditTool.id || tool.id === WriteTool.id) return !usePatch
+ 
+@@ -353,7 +368,7 @@ export const layer = Layer.effect(
+ 
+     const named: Interface["named"] = Effect.fn("ToolRegistry.named")(function* () {
+       const s = yield* InstanceState.get(state)
+-      return { task: s.task, read: s.read }
++      return { task: s.task, read: (s.custom.findLast((tool) => tool.id === "read") ?? s.read) as ReadDef }
+     })
+ 
+     return Service.of({ ids, all, named, tools })
+diff --git a/packages/opencode/test/tool/registry.test.ts b/packages/opencode/test/tool/registry.test.ts
+index 6e033ff..f0598e5 100644
+--- a/packages/opencode/test/tool/registry.test.ts
++++ b/packages/opencode/test/tool/registry.test.ts
+@@ -87,6 +87,38 @@ afterEach(async () => {
+ })
+ 
+ describe("tool.registry", () => {
++  it.instance("uses custom file overrides consistently for prompts and named reads", () =>
++    Effect.gen(function* () {
++      const test = yield* TestInstance
++      const directory = path.join(test.directory, ".deveco", "tools")
++      yield* Effect.promise(() => fs.mkdir(directory, { recursive: true }))
++      for (const id of ["read", "write", "edit", "apply_patch"]) {
++        yield* Effect.promise(() =>
++          Bun.write(
++            path.join(directory, `${id}.ts`),
++            `export default { description: "replacement ${id}", args: {}, execute: async () => "custom" }`,
++          ),
++        )
++      }
++      const registry = yield* ToolRegistry.Service
++      const all = yield* registry.all()
++      expect(all.filter((tool) => tool.id === "read")).toHaveLength(1)
++      expect((yield* registry.named()).read.source).toBe("custom")
++      const build = yield* (yield* Agent.Service).get("build")
++      if (!build) throw new Error("Missing build agent")
++      for (const model of ["test", "gpt-test"]) {
++        const tools = yield* registry.tools({
++          providerID: ProviderV2.ID.opencode,
++          modelID: ModelV2.ID.make(model),
++          agent: build,
++        })
++        for (const id of ["read", "write", "edit", "apply_patch"]) {
++          expect(tools.find((tool) => tool.id === id)?.source).toBe("custom")
++        }
++      }
++    }),
++  )
++
+   it.instance("does not expose task_status", () =>
+     Effect.gen(function* () {
+       const registry = yield* ToolRegistry.Service
+diff --git a/packages/plugin/src/index.ts b/packages/plugin/src/index.ts
+index 457b5ed..29372a9 100644
+--- a/packages/plugin/src/index.ts
++++ b/packages/plugin/src/index.ts
+@@ -63,6 +63,7 @@ export type PluginInput = {
+   }
+   serverUrl: URL
+   $: BunShell
++  experimental_capabilities?: { sessionStopping: 1; commandResult: 1; shellEnv: 1 }
+ }
+ 
+ export type PluginOptions = Record<string, unknown>
+@@ -226,6 +227,9 @@ export interface Hooks {
+   dispose?: () => Promise<void>
+   event?: (input: { event: Event }) => Promise<void>
+   config?: (input: Config) => Promise<void>
++  /** Awaited after all foreground tool work and before the turn becomes idle.
++   * The abort signal and ask service belong to this turn, not a synthetic tool. */
++  "session.turn.stopping"?: (input: import("./tool.js").ToolContext, output: {}) => Promise<void>
+   tool?: {
+     [key: string]: ToolDefinition
+   }
+@@ -264,7 +268,7 @@ export interface Hooks {
+   "permission.ask"?: (input: Permission, output: { status: "ask" | "deny" | "allow" }) => Promise<void>
+   "command.execute.before"?: (
+     input: { command: string; sessionID: string; arguments: string },
+-    output: { parts: Part[] },
++    output: { parts: Part[]; result?: { text: string } },
+   ) => Promise<void>
+   "tool.execute.before"?: (
+     input: { tool: string; sessionID: string; callID: string },
+diff --git a/packages/plugin/src/tool.ts b/packages/plugin/src/tool.ts
+index f242250..f47a95b 100644
+--- a/packages/plugin/src/tool.ts
++++ b/packages/plugin/src/tool.ts
+@@ -17,6 +17,8 @@ export type ToolContext = {
+   abort: AbortSignal
+   metadata(input: { title?: string; metadata?: { [key: string]: any } }): void
+   ask(input: AskInput): Promise<void>
++  /** Resolve shell.env hooks without executing a process on the host. */
++  shellEnv?(cwd: string): Promise<Record<string, string>>
+ }
+ 
+ type AskInput = {
+diff --git a/packages/tui/src/i18n/en.json b/packages/tui/src/i18n/en.json
+index b116212..7ec0cfe 100644
+--- a/packages/tui/src/i18n/en.json
++++ b/packages/tui/src/i18n/en.json
+@@ -622,6 +622,24 @@
+     "collect_footer_view_privacy_key": "v"
+   },
+   "permission": {
++    "deltabox": {
++      "title": "Review changes",
++      "accept": "Accept",
++      "rollback": "Roll back",
++      "files": "Files to review: {{count}}",
++      "description": "Accept keeps all changes in this review. Roll back restores the state before these changes.",
++      "binary": "Binary",
++      "mode": {
++        "task": "At the end of the task",
++        "tool": "After each modifying tool",
++        "risky": "After each risky tool"
++      },
++      "kind": {
++        "added": "Added",
++        "modified": "Modified",
++        "deleted": "Deleted"
++      }
++    },
+     "no_diff": "No diff provided",
+     "allow_until_restart": "This will allow {{action}} until DevEco Code is restarted.",
+     "allow_patterns_until_restart": "This will allow the following patterns until DevEco Code is restarted",
+diff --git a/packages/tui/src/i18n/zh.json b/packages/tui/src/i18n/zh.json
+index e5177d8..7827d71 100644
+--- a/packages/tui/src/i18n/zh.json
++++ b/packages/tui/src/i18n/zh.json
+@@ -622,6 +622,24 @@
+     "collect_footer_view_privacy_key": "v"
+   },
+   "permission": {
++    "deltabox": {
++      "title": "审核修改",
++      "accept": "接受",
++      "rollback": "回滚",
++      "files": "{{count}} 个文件待审核",
++      "description": "接受将保留本次待审核的全部修改；回滚将恢复到这些修改之前。",
++      "binary": "二进制",
++      "mode": {
++        "task": "任务结束后审核",
++        "tool": "修改工具执行后审核",
++        "risky": "风险工具执行后审核"
++      },
++      "kind": {
++        "added": "新增",
++        "modified": "修改",
++        "deleted": "删除"
++      }
++    },
+     "no_diff": "没有提供差异信息",
+     "allow_until_restart": "这将允许 {{action}}，直到 DevEco Code 重启。",
+     "allow_patterns_until_restart": "这将允许以下模式，直到 DevEco Code 重启",
+diff --git a/packages/tui/src/routes/session/index.tsx b/packages/tui/src/routes/session/index.tsx
+index ae8aece..486255f 100644
+--- a/packages/tui/src/routes/session/index.tsx
++++ b/packages/tui/src/routes/session/index.tsx
+@@ -2574,6 +2574,9 @@ function Write(props: ToolProps) {
+ 
+   return (
+     <Switch>
++      <Match when={stringValue(props.metadata.diff) !== undefined}>
++        <Edit {...props} label="Write" />
++      </Match>
+       <Match when={props.metadata.diagnostics !== undefined}>
+         <BlockTool title={"# Wrote " + pathFormatter.format(stringValue(props.input.filePath))} part={props.part}>
+           <line_number fg={theme.textMuted} minWidth={3} paddingRight={1}>
+@@ -2801,7 +2804,7 @@ export function formatCompletedSubagentDetail(toolcalls: number, duration: strin
+   return `${formatSubagentToolcalls(toolcalls)} · ${duration}`
+ }
+ 
+-function Edit(props: ToolProps) {
++function Edit(props: ToolProps & { label?: string }) {
+   const { t } = useI18n()
+   const ctx = use()
+   const { theme, syntax } = useTheme()
+@@ -2836,7 +2839,10 @@ function Edit(props: ToolProps) {
+   return (
+     <Switch>
+       <Match when={stringValue(props.metadata.diff) !== undefined}>
+-        <BlockTool title={"← Edit " + pathFormatter.format(stringValue(props.input.filePath))} part={props.part}>
++        <BlockTool
++          title={"← " + (props.label ?? "Edit") + " " + pathFormatter.format(stringValue(props.input.filePath))}
++          part={props.part}
++        >
+           <box paddingLeft={1}>
+             <diff
+               diff={diffContent()}
+@@ -3079,6 +3085,8 @@ const toolDisplays = new Set([
+ ])
+ 
+ export function toolDisplay(tool: string) {
++  if (tool === "shell") return "bash"
++  if (tool === "spec_write") return "write"
+   return toolDisplays.has(tool) ? tool : "generic"
+ }
+ 
+diff --git a/packages/tui/src/routes/session/permission.tsx b/packages/tui/src/routes/session/permission.tsx
+index 8efacc3..ed839bb 100644
+--- a/packages/tui/src/routes/session/permission.tsx
++++ b/packages/tui/src/routes/session/permission.tsx
+@@ -17,6 +17,7 @@ import { useTuiConfig } from "../../config"
+ import { DEVECO_BASE_MODE, useBindings, useCommandShortcut } from "../../keymap"
+ import { usePathFormatter } from "../../context/path-format"
+ import { useI18n } from "../../i18n"
++import { deltaboxReview } from "@opencode-ai/core/util/deltabox-review"
+ 
+ type PermissionStage = "permission" | "always" | "reject"
+ 
+@@ -136,8 +137,63 @@ export function PermissionPrompt(props: { request: PermissionRequest; directory?
+ 
+   const { theme } = useTheme()
+ 
++  const review = createMemo(() =>
++    props.request.permission === "deltabox_review" ? deltaboxReview(props.request.metadata) : undefined,
++  )
++
+   return (
+     <Switch>
++      <Match when={review()}>
++        {(value) => (
++          <Prompt
++            title={t("permission.deltabox.title")}
++            body={
++              <box paddingLeft={1} gap={1}>
++                <text fg={theme.textMuted}>
++                  {t("permission.deltabox.files", { count: value().count })}
++                  {" · "}
++                  {t(`permission.deltabox.mode.${value().mode}`)}
++                </text>
++                <scrollbox maxHeight={8}>
++                  <For each={value().changes}>
++                    {(change) => (
++                      <text fg={theme.text} wrapMode="word">
++                        {t(`permission.deltabox.kind.${change.kind}`)} {change.path}{" "}
++                        <Show
++                          when={change.is_binary}
++                          fallback={
++                            <>
++                              <span style={{ fg: theme.diffAdded }}>+{change.added_lines}</span>{" "}
++                              <span style={{ fg: theme.diffRemoved }}>−{change.removed_lines}</span>
++                            </>
++                          }
++                        >
++                          {t("permission.deltabox.binary")}
++                        </Show>
++                      </text>
++                    )}
++                  </For>
++                </scrollbox>
++                <text fg={theme.textMuted} wrapMode="word">
++                  {t("permission.deltabox.description")}
++                </text>
++              </box>
++            }
++            options={{ once: t("permission.deltabox.accept"), reject: t("permission.deltabox.rollback") }}
++            escapeKey="reject"
++            escapeLabel={t("permission.deltabox.rollback")}
++            fullscreen
++            onSelect={(reply) => {
++              void sdk.client.permission.reply({
++                reply,
++                requestID: props.request.id,
++                directory: props.directory,
++                workspace: project.workspace.current(),
++              })
++            }}
++          />
++        )}
++      </Match>
+       <Match when={store.stage === "always"}>
+         <Prompt
+           title={t("permission.always_allow")}
+@@ -380,6 +436,7 @@ export function PermissionPrompt(props: { request: PermissionRequest; directory?
+               body: (
+                 <box paddingLeft={1}>
+                   <text fg={theme.textMuted}>{t("permission.tool_label", { name: permission })}</text>
++                  <For each={props.request.patterns}>{(pattern) => <text fg={theme.text}>{pattern}</text>}</For>
+                 </box>
+               ),
+             }
+@@ -533,6 +590,7 @@ function Prompt<const T extends Record<string, string>>(props: {
+   body: JSX.Element
+   options: T
+   escapeKey?: keyof T
++  escapeLabel?: string
+   fullscreen?: boolean
+   onSelect: (option: keyof T) => void
+ }) {
+@@ -553,7 +611,7 @@ function Prompt<const T extends Record<string, string>>(props: {
+     commands: [
+       {
+         name: "app.exit",
+-        title: t("permission.reject_permission"),
++        title: props.escapeLabel ?? t("permission.reject_permission"),
+         category: t("category.permission"),
+         run() {
+           if (!props.escapeKey) return
+@@ -621,7 +679,7 @@ function Prompt<const T extends Record<string, string>>(props: {
+         ? [
+             {
+               key: "escape",
+-              desc: t("permission.reject_permission"),
++              desc: props.escapeLabel ?? t("permission.reject_permission"),
+               group: t("category.permission"),
+               cmd: () => props.onSelect(props.escapeKey!),
+             },
+diff --git a/packages/ui/src/components/message-part.tsx b/packages/ui/src/components/message-part.tsx
+index bbc3d29..0f0f4d7 100644
+--- a/packages/ui/src/components/message-part.tsx
++++ b/packages/ui/src/components/message-part.tsx
+@@ -1325,7 +1325,8 @@ export function registerTool(input: { name: string; render?: ToolComponent }) {
+ }
+ 
+ export function getTool(name: string) {
+-  return state[name]?.render
++  const alias = name === "shell" ? "bash" : name === "spec_write" ? "write" : name
++  return state[name]?.render ?? state[alias]?.render
+ }
+ 
+ export const ToolRegistry = {
+@@ -2061,6 +2062,15 @@ ToolRegistry.register({
+     const path = createMemo(() => props.input.filePath || "")
+     const filename = () => getFilename(props.input.filePath ?? "")
+     const pending = () => props.status === "pending" || props.status === "running"
++    const diffProps = createMemo(() => {
++      const source = props.metadata.filediff
++      const diff = source ? resolveFileDiff(source) : undefined
++      if (diff) return { fileDiff: diff, hunkSeparators: diff.isPartial ? "simple" : "line-info-basic" }
++      return {
++        before: { name: path(), contents: source?.before ?? "" },
++        after: { name: path(), contents: source?.after ?? props.input.content ?? "" },
++      }
++    })
+     return (
+       <div data-component="write-tool">
+         <BasicTool
+@@ -2084,24 +2094,41 @@ ToolRegistry.register({
+                   </div>
+                 </Show>
+               </div>
+-              <div data-slot="message-part-actions">{/* <DiffChanges diff={diff} /> */}</div>
++              <div data-slot="message-part-actions">
++                <Show when={!pending() && props.metadata.filediff}>
++                  <DiffChanges changes={props.metadata.filediff} />
++                </Show>
++              </div>
+             </div>
+           }
+         >
+-          <Show when={props.input.content && path()}>
++          <Show when={(props.input.content || props.metadata.filediff) && path()}>
+             <ToolFileAccordion path={path()}>
+               <div data-component="write-content">
+-                <Dynamic
+-                  component={fileComponent}
+-                  mode="text"
+-                  file={{
+-                    name: props.input.filePath,
+-                    contents: props.input.content,
+-                    cacheKey: checksum(props.input.content),
+-                  }}
+-                  overflow="scroll"
+-                  onRendered={props.onContentRendered}
+-                />
++                <Show
++                  when={props.metadata.filediff}
++                  fallback={
++                    <Dynamic
++                      component={fileComponent}
++                      mode="text"
++                      file={{
++                        name: props.input.filePath,
++                        contents: props.input.content,
++                        cacheKey: checksum(props.input.content),
++                      }}
++                      overflow="scroll"
++                      onRendered={props.onContentRendered}
++                    />
++                  }
++                >
++                  <Dynamic
++                    component={fileComponent}
++                    mode="diff"
++                    {...diffProps()}
++                    virtualize={props.virtualizeDiff}
++                    onRendered={props.onContentRendered}
++                  />
++                </Show>
+               </div>
+             </ToolFileAccordion>
+           </Show>
+diff --git a/packages/core/src/util/deltabox-review.ts b/packages/core/src/util/deltabox-review.ts
+new file mode 100644
+index 0000000..45ac0ba
+--- /dev/null
++++ b/packages/core/src/util/deltabox-review.ts
+@@ -0,0 +1,36 @@
++export type DeltaboxChange = {
++  path: string
++  kind: "added" | "modified" | "deleted"
++  added_lines: number
++  removed_lines: number
++  is_binary: boolean
++}
++
++// Permission metadata can also come from third-party plugins or older sessions.
++// Both renderers use the same validation before displaying a review summary.
++export function deltaboxReview(metadata: Record<string, unknown> = {}) {
++  const changes = Array.isArray(metadata.changes) ? metadata.changes.filter(isChange) : []
++  const mode = metadata.reviewMode === "tool" || metadata.reviewMode === "risky" ? metadata.reviewMode : "task"
++  const count = nonnegative(metadata.pendingChanges) ? metadata.pendingChanges : changes.length
++  return { changes, mode, count }
++}
++
++function nonnegative(value: unknown): value is number {
++  return typeof value === "number" && Number.isSafeInteger(value) && value >= 0
++}
++
++function isChange(value: unknown): value is DeltaboxChange {
++  if (!value || typeof value !== "object") return false
++  return (
++    "path" in value &&
++    typeof value.path === "string" &&
++    "kind" in value &&
++    (value.kind === "added" || value.kind === "modified" || value.kind === "deleted") &&
++    "added_lines" in value &&
++    nonnegative(value.added_lines) &&
++    "removed_lines" in value &&
++    nonnegative(value.removed_lines) &&
++    "is_binary" in value &&
++    typeof value.is_binary === "boolean"
++  )
++}
+diff --git a/packages/opencode/src/session/stopping.ts b/packages/opencode/src/session/stopping.ts
+new file mode 100644
+index 0000000..cdd11ea
+--- /dev/null
++++ b/packages/opencode/src/session/stopping.ts
+@@ -0,0 +1,50 @@
++import { Effect } from "effect"
++import { EffectBridge } from "@/effect/bridge"
++import { InstanceState } from "@/effect/instance-state"
++import { Plugin } from "@/plugin"
++import { Permission } from "@/permission"
++import { Agent } from "@/agent/agent"
++import { Session } from "./session"
++import { SessionID, MessageID } from "./schema"
++
++export const run = Effect.fn("SessionStopping.run")(function* (input: {
++  sessionID: SessionID
++  messageID: MessageID
++  agent: string
++}) {
++  const plugin = yield* Plugin.Service
++  const permission = yield* Permission.Service
++  const bridge = yield* EffectBridge.make()
++  const ctx = yield* InstanceState.context
++  const session = yield* (yield* Session.Service).get(input.sessionID).pipe(Effect.orDie)
++  const agent = yield* (yield* Agent.Service).get(input.agent)
++  yield* Effect.promise((signal) =>
++    bridge.promise(
++      plugin.trigger(
++        "session.turn.stopping",
++        {
++          ...input,
++          directory: ctx.directory,
++          worktree: ctx.worktree,
++          abort: signal,
++          metadata() {},
++          ask: (request) =>
++            bridge.promise(
++              permission
++                .ask({
++                  ...request,
++                  sessionID: input.sessionID,
++                  ruleset: Permission.merge(agent?.permission ?? [], session.permission ?? []),
++                })
++                .pipe(Effect.orDie),
++              { signal },
++            ),
++        },
++        {},
++      ),
++      { signal },
++    ),
++  )
++})
++
++export * as SessionStopping from "./stopping"

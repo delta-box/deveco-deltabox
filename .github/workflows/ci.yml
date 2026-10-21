@@ -1,0 +1,38 @@
+name: DevEco Deltabox
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npm test
+      - run: npm pack --dry-run
+
+  host-patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Fetch pinned DevEco host
+        run: |
+          git clone --no-checkout https://gitcode.com/openharmony-sig/deveco-code.git "$RUNNER_TEMP/deveco-code"
+          git -C "$RUNNER_TEMP/deveco-code" checkout --detach abc2d62370d46e7102828eb9e1f1783f0dd7474f
+      - run: node host/setup.mjs --source "$RUNNER_TEMP/deveco-code" --check

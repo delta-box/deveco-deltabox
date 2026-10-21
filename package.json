@@ -1,0 +1,55 @@
+{
+  "name": "deveco-deltabox",
+  "version": "0.1.0",
+  "description": "Deltabox sessions and reviewable tools for DevEco Code",
+  "license": "Apache-2.0",
+  "type": "module",
+  "main": "dist/plugin.js",
+  "types": "dist/plugin.d.ts",
+  "exports": {
+    ".": "./dist/plugin.js"
+  },
+  "files": [
+    "dist",
+    "bin",
+    "host/*.mjs",
+    "host/*.json",
+    "host/*.patch",
+    "host/*.md",
+    "README.md",
+    "host/UPSTREAM-LICENSE"
+  ],
+  "bin": {
+    "deveco-deltabox": "bin/deveco-deltabox.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "npm run build && node --test tests/*.test.mjs",
+    "test:integration": "npm run build && node --test tests/integration.mjs",
+    "test:host": "npm run build && node --test tests/host-smoke.mjs",
+    "test:host-e2e": "npm run build && node --test tests/host-e2e.mjs",
+    "setup:host": "node host/setup.mjs",
+    "prepack": "npm run build"
+  },
+  "dependencies": {
+    "@opencode-ai/plugin": "1.17.9",
+    "deltabox-lite": "^0.1.2",
+    "diff": "^8.0.2"
+  },
+  "devDependencies": {
+    "@types/diff": "^7.0.2",
+    "@types/node": "^22.0.0",
+    "typescript": "^5.9.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/delta-box/deveco-deltabox.git"
+  },
+  "homepage": "https://github.com/delta-box/deveco-deltabox#readme",
+  "bugs": {
+    "url": "https://github.com/delta-box/deveco-deltabox/issues"
+  }
+}
