@@ -22,13 +22,7 @@ jobs:
           node-version: 24
           cache: npm
       - name: Install dependencies
-        if: runner.os != 'Windows'
         run: npm ci --ignore-scripts --no-audit --no-fund
-      # The pinned 0.1.2 wrapper excludes Windows. These tests need its JS/types,
-      # not a native backend; remove this exception after upgrading Deltabox.
-      - name: Install dependencies for Windows unit tests
-        if: runner.os == 'Windows'
-        run: npm ci --force --omit=optional --ignore-scripts --no-audit --no-fund
       - run: npm test
       - run: npm pack --dry-run
 
