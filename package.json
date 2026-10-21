@@ -37,7 +37,7 @@
   },
   "dependencies": {
     "@opencode-ai/plugin": "1.17.9",
-    "deltabox-lite": "^0.1.2",
+    "deltabox-lite": "0.1.4",
     "diff": "^8.0.2"
   },
   "devDependencies": {

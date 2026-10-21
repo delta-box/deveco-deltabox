@@ -33,7 +33,7 @@ test("config merges nested project settings and resolves paths; invalid config f
 
 test("state paths resolve existing symlink ancestors before creating private views", (t) => {
   const { project, rt } = setup(t);
-  symlinkSync(project, join(project, "alias"));
+  symlinkSync(project, join(project, "alias"), process.platform === "win32" ? "junction" : "dir");
   writeFileSync(join(project, "deltabox.json"), JSON.stringify({ stateDir: "alias/new/state", runtimeDir: "alias/new/runtime" }));
   const cfg = loadConfig(project, join(project, "missing-user.json"));
   assert.equal(cfg.stateDir, join(rt.project, "new/state"));

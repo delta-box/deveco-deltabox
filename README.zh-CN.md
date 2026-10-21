@@ -38,7 +38,7 @@ node /absolute/path/to/deveco-deltabox/bin/deveco-deltabox.mjs
 
 `glob`、`grep` 需要 `rg` 在 PATH 中。沙箱 shell 会调用宿主的 `shell.env` 流程，保留工具链 PATH、认证来源和其他环境注入，并通过结构化参数传给 Deltabox。宿主通常优先使用其自带的 CLI；也可在 shell 中调用已安装 `devecocli` 的绝对路径。SDK、Java 等路径仍按 [DevEco CLI 官方说明](https://gitcode.com/openharmony-sig/deveco-cli)配置。
 
-DevEco 官方发行版与 Deltabox 当前共同支持的平台是 macOS。适配器也接受 Linux 上的兼容宿主；Windows 会明确拒绝初始化。插件采用 DevEco 的 `@opencode-ai/plugin` 接口，接口依赖固定为 `1.17.9`。
+支持 macOS，也接受 Linux 和 Windows 上的兼容宿主。插件采用 DevEco 的 `@opencode-ai/plugin` 接口，接口依赖固定为 `1.17.9`。
 
 ## 与 Pi / DeepSeek Harness 对齐的能力
 

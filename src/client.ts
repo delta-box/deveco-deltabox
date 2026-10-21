@@ -1,11 +1,13 @@
 import { spawn, type ChildProcessWithoutNullStreams } from "node:child_process";
 import { createRequire } from "node:module";
 import { createInterface } from "node:readline";
+import { once } from "node:events";
 import type {
   NativeDeltaboxInstance, NativeSessionInfo, NativeExecResult, NativeActiveReview,
   NativeDiffResult, NativeCommitResult, NativeAbortResult, DeltaboxNativeBinding,
 } from "deltabox-lite";
 import type { Config, ReviewMode } from "./config.js";
+import { windowsArgv } from "./windows.js";
 
 export type SessionInfo = NativeSessionInfo;
 export type Diff = NativeDiffResult;
@@ -186,22 +188,30 @@ export class DeltaboxClient implements Client {
 
   async stop(): Promise<void> {
     if (!this.info) {
-      this.child?.stdin.end();
-      this.child?.kill();
+      await this.stopChild();
       return;
     }
     // Do not discard identity on failure: callers must not mistake a failed stop for success.
     if (this.native) await this.native.stopSession(this.id());
     else await this.operation("session.stop", ["session", "stop"]);
     this.info = undefined;
-    this.child?.stdin.end();
-    this.child?.kill();
+    await this.stopChild();
+  }
+
+  private async stopChild(): Promise<void> {
+    const child = this.child;
+    if (!child || child.exitCode !== null || child.signalCode !== null) return;
+    const closed = once(child, "close").catch(() => {});
+    child.stdin.end();
+    child.kill();
+    await closed;
   }
 
   status(): Promise<SessionInfo> {
     return this.native ? this.native.sessionStatus(this.id()) : this.operation("session.status", ["session", "status"]);
   }
   async exec(argv: string[], cwd = this.project, label?: string, env?: Record<string, string>): Promise<NativeExecResult> {
+    if (process.platform === "win32") argv = windowsArgv(argv);
     const entries = env ? Object.entries(env) : undefined;
     if (entries?.some(([key, value]) => !/^[A-Za-z_][A-Za-z0-9_]*$/.test(key) || value.includes("\0"))) throw new Error("Invalid command environment");
     if (this.native) return this.native.exec(this.id(), argv, cwd, entries?.map(([key, value]) => ({ key, value })), label);
