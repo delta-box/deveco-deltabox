@@ -17,6 +17,7 @@
     "host/*.patch",
     "host/*.md",
     "README.md",
+    "README.zh-CN.md",
     "host/UPSTREAM-LICENSE"
   ],
   "bin": {

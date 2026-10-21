@@ -1,60 +1,62 @@
-# DevEco Code 接入验证记录
+# DevEco Code integration validation record
 
-验证日期：2026-10-21，macOS arm64。
+English | [简体中文](VERIFICATION.zh-CN.md)
 
-## 构建来源
+Validation date: 2026-10-21. Platform: macOS arm64.
 
-- 宿主源码：`https://gitcode.com/openharmony-sig/deveco-code.git`，提交 `abc2d62370d46e7102828eb9e1f1783f0dd7474f`，对应 DevEco Code `0.2.4`、插件 API `1.17.9`。
-- 本机已安装的 DevEco CLI：`1.3.9`；未替换全局 `deveco` 或 `devecocli`。
-- Deltabox：分别使用Deltabox Lite 项目的 release 构建及 npm `deltabox-lite@0.1.2` 验证。
-- 构建工具：Node.js `24.9.0`、Bun `1.4.3`。
-- [宿主补丁](deveco-code.patch)在原始上游文件上通过 `git apply --check`，应用后的 18 个文件与构建源码逐字节一致。补丁摘要记录在本地发行包的 `deltabox-build.json` 中。
+## Build provenance
 
-正式发行包位于 `../.local/deveco-code`，内部测试发行包位于 `../.local/deveco-code-test`。正式构建包含 Web UI，保留产品协议流程；测试包使用上游内部测试选项，启动器默认选择正式包。
+- Host source: [DevEco Code](https://gitcode.com/openharmony-sig/deveco-code), commit `abc2d62370d46e7102828eb9e1f1783f0dd7474f`, corresponding to DevEco Code `0.2.4` and plugin API `1.17.9`.
+- Locally installed DevEco CLI: `1.3.9`. The global `deveco` and `devecocli` installations were left intact.
+- Deltabox: validated separately with a release build from the Deltabox Lite project and npm `deltabox-lite@0.1.2`.
+- Build tools: Node.js `24.9.0`, Bun `1.4.3`.
+- The [host patch](deveco-code.patch) passed `git apply --check` against the original upstream files. After applying it, all 18 patched files matched the build source byte for byte. The patch digest is recorded in the local distribution's `deltabox-build.json`.
 
-## 验证结果
+The production distribution is in `../.local/deveco-code`, and the internal test distribution is in `../.local/deveco-code-test`, relative to this document. The production build includes the Web UI and retains the product agreement flow. The test build uses the upstream internal test option. The launcher selects the production build by default.
 
-| 范围 | 结果 | 实际检查内容 |
+## Results
+
+| Scope | Result | Checks performed |
 | --- | --- | --- |
-| 插件单元测试 | 42 通过 | 宿主能力检查、审阅生命周期、三种审核时机、只读差异查看不提前审批、权限事件、取消、队列、传输故障、补丁校验、文件内容版本检查 |
-| Deltabox 源码构建集成 | 12 通过，1 跳过 | 3 种传输 × 3 种文件系统模式、提交/回滚/清理、符号链接越界拒绝、私有会话快照刷新；可选 CLI 测试未启用 |
-| npm Deltabox 集成 | 12 通过，1 跳过 | 同一真实后端矩阵；CLI 已实际启动，脚手架测试因缺少 SDK 跳过 |
-| 宿主工具注册表及插件回归 | 16 通过 | 覆盖工具去重、附件 read 使用插件、不同模型可使用自定义文件工具、插件触发 |
-| 宿主原有 prompt 回归 | 62 通过，1 上游跳过 | 提示、取消、权限、附件、命令、后台消息等；上游关闭的 v2 projector 用例保持跳过 |
-| 完整宿主 HTTP 对话 | 1 通过，包含多个场景 | 真实宿主 + 本地模型夹具 + 真实 Deltabox；接受、拒绝、取消、自动接受、前台子 Agent，以及 task / tool / risky 的实际暂停边界 |
-| 正式启动器 smoke | 1 通过 | 经启动器加载插件，使用真实调试工具入口完成私有文件读写、命令、提交和回滚 |
-| 类型检查 | 通过 | 插件及宿主 backend、Web app、TUI、共享 UI 包 |
-| 构建与分发检查 | 通过 | 正式宿主构建、测试宿主构建、`npm pack --dry-run` |
+| Plugin unit tests | 42 passed | Host capability checks, review lifecycle, all three review modes, read-only diff inspection without early approval, permission events, cancellation, queueing, transport failures, patch validation, and file content-version checks |
+| Integration with a Deltabox source build | 12 passed, 1 skipped | Three transports across three filesystem modes; commit, rollback, and cleanup; rejection of symlinks escaping the project; private-session snapshot refresh; optional CLI test not enabled |
+| Integration with npm Deltabox | 12 passed, 1 skipped | The same real-backend matrix; the CLI was launched, but the scaffolding test was skipped because the SDK was unavailable |
+| Host tool registry and plugin regression tests | 16 passed | Tool deduplication, plugin-backed attachment reads, custom file tools across models, and plugin triggers |
+| Existing host prompt regression tests | 62 passed, 1 upstream skip | Prompts, cancellation, permissions, attachments, commands, background messages, and related behavior; the upstream-disabled v2 projector case remained skipped |
+| Full host HTTP conversations | 1 passed, with multiple scenarios | Real host, local model fixture, and real Deltabox; acceptance, rejection, cancellation, auto-accept, foreground child agents, and actual pause boundaries for task / tool / risky modes |
+| Production launcher smoke test | 1 passed | Plugin loaded through the launcher; private file reads and writes, commands, commit, and rollback through the real debug tool entry point |
+| Type checks | Passed | Plugin and host backend, Web app, TUI, and shared UI packages |
+| Build and distribution checks | Passed | Production host build, test host build, and `npm pack --dry-run` |
 
-完整宿主测试确认：
+The full host tests confirmed:
 
-- 普通模式下，审批未完成时会话仍为 busy，私有文件尚未进入宿主目录；点击接受后落盘，拒绝后撤回。
-- 取消审批后没有残留待答权限请求，修改继续保留在待审阅范围，可用用户命令查看或回滚。
-- `deveco run --auto` 自动通过 Deltabox 审批并提交修改，没有额外要求手动确认。
-- 前台子 Agent 与父任务共用沙箱，子 Agent 不提前提交，由父任务统一请求审批。
-- `task` 在最终模型答复后统一审核两个文件；`tool` / `risky` 在每次写入后暂停，读取和无变更命令不触发额外审核。
-- 文件工具输出保留原生差异 metadata；审批说明不会追加到模型工具输出。
-- `/sandbox-status` 等用户命令直接产生会话结果，不增加模型请求数。
-- `shell.env` 注入的含 `$()`、引号等字符的环境变量按原值传入，且可以执行本机的 DevEco CLI。
+- In normal mode, the session stays busy until approval is resolved, and private files have not yet reached the host directory. Accepting writes them to the host; rejecting removes the pending changes.
+- Cancelling approval leaves no unanswered permission request. Changes remain in the pending review scope and can be inspected or rolled back with user commands.
+- `deveco run --auto` approves Deltabox review and commits changes without requiring additional manual confirmation.
+- Foreground child agents share the parent task's sandbox. They do not commit early; the parent task requests approval for the shared scope.
+- `task` reviews two files together after the final model response. `tool` / `risky` pause after each write; reads and commands that make no changes do not trigger extra review.
+- File tool output retains native diff metadata. Approval descriptions are not appended to model tool output.
+- User commands such as `/sandbox-status` produce session results directly without increasing the model request count.
+- Environment variables injected by `shell.env`, including values containing `$()`, quotes, and similar characters, arrive unchanged. The locally installed DevEco CLI can run through the sandbox.
 
-## 浏览器验证
+## Browser validation
 
-在独立临时项目中启动真实宿主和 Web 开发页面，用本地 HTTP 模型夹具生成 write、edit、apply_patch、shell 调用，并在 Chrome 中操作。
+A real host and Web development page were started in an isolated temporary project. A local HTTP model fixture produced write, edit, apply_patch, and shell calls, which were exercised in Chrome.
 
-已观察到新建文件的绿色新增行、编辑文件的红绿差异、补丁卡片、Shell 卡片，以及专用“审核修改”面板。面板显示文件数、审核模式和逐文件增删摘要，操作为“接受 / 回滚”，等待时显示“等待审核”。浏览器点击“接受”后核对三个文件均已提交；下一轮点击“回滚”后核对该轮文件不存在，之前接受的文件保留，会话恢复 idle。
+Observed UI elements included green added lines for new files, red/green diffs for edited files, patch cards, shell cards, and the dedicated review panel. The panel displayed the file count, review mode, and per-file addition/deletion summaries. The tested Chinese UI used “审核修改” (Review changes), “接受 / 回滚” (Accept / Roll back), and “等待审核” (Waiting for review). Accepting in the browser committed all three files. Rolling back the next turn removed that turn's file, preserved the previously accepted files, and returned the session to idle.
 
-截图和完整测试日志为本地验证产物，不随源码发布。
+Screenshots and complete test logs are local validation artifacts and are not distributed with the source.
 
-浏览器夹具仅替换测试标签页对产品协议状态的只读查询，不调用协议接受接口，不修改用户协议状态或全局配置。没有使用外部模型账号。TUI 完成类型检查和编译；交互点击验证在 Web UI 上进行。
+The browser fixture replaced only the test tab's read-only product agreement status query. It did not call the agreement acceptance endpoint or change the user's agreement state or global configuration. No external model account was used. The TUI passed type checking and compilation; interactive validation was performed in the Web UI.
 
-定制审核 UI 的最终生产页面在 Chrome 的 `1280×800` 和 `390×844` 视口通过检查：页面身份正确、非空、无框架错误覆盖层、无控制台或运行时错误，两个操作按钮完整可见且没有遮挡。Browser 插件不可用，使用 Playwright 和仓库要求的 agent-browser 验证。生产页面三次独立浏览器上下文加载，审核面板就绪中位数由 626 ms 到 538 ms。该样本仅用于排查明显退化，不代表性能提升承诺。
+The final production page with the custom review UI passed checks in Chrome at `1280×800` and `390×844`: the expected page was loaded and nonempty, there was no framework error overlay or console/runtime error, and both action buttons were fully visible and unobstructed. The Browser plugin was unavailable, so Playwright and the repository-required agent-browser were used. Across three independent browser contexts loading the production page, the median time until the review panel was ready changed from 626 ms to 538 ms. This small sample was used to look for obvious regressions and is not a performance improvement claim.
 
-浏览器测试等待命令列表初始化完成后再关闭上下文。过早关闭会中断上游缓存初始化并导致后续 `/command` 返回 499；最终验证的独立实例未出现该错误。
+Browser tests waited for command-list initialization to complete before closing each context. Closing too early interrupts upstream cache initialization and can cause later `/command` requests to return 499. This error did not occur in the final isolated validation instance.
 
-安装器采用临时文件加重命名的方式更新二进制，避免原位覆盖正在运行的 macOS 程序后新进程遭到 SIGKILL；安装后的 `--version` 和完整宿主对话均已通过。
+The installer updates binaries by copying to a temporary file and renaming it, avoiding SIGKILL on new processes caused by overwriting a running macOS executable in place. The installed binary's `--version` check and full host conversations both passed.
 
-## 未覆盖的环境条件
+## Environment limitations
 
-本机没有可用的 DevEco Studio / Command Line Tools SDK。DevEco CLI 已在 Deltabox 内实际执行，但创建鸿蒙项目时返回缺少安装目录的错误，因此脚手架、完整编译、签名和真机安装不能算已验证。配置 `DEVECO_CLI_STUDIO_PATH` 或 `DEVECO_CLI_CLT_PATH` 后，可重新运行带 `DEVECO_CLI_BIN` 的集成测试。
+No usable DevEco Studio / Command Line Tools SDK was available locally. DevEco CLI was executed inside Deltabox, but creating a HarmonyOS project returned a missing-installation-directory error. Scaffolding, full compilation, signing, and installation on a physical device therefore remain unverified. After setting `DEVECO_CLI_STUDIO_PATH` or `DEVECO_CLI_CLT_PATH`, rerun the integration tests with `DEVECO_CLI_BIN` configured.
 
-累计沙箱差异通过 `/sandbox-review`、`/sandbox-diff` 查看；DevEco 的 Git 审查侧栏沿用宿主仓库视图。私有模式下未提交的文件不会提前出现在该侧栏。命令期限、前台执行和外部副作用的边界见[插件说明](../README.md)。
+Use `/sandbox-review` and `/sandbox-diff` for cumulative sandbox diffs. DevEco's Git review sidebar continues to show the host repository view, so uncommitted files in private mode do not appear there early. See the [plugin README](../README.md) for command deadlines, foreground execution, and external side effects.
