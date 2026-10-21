@@ -37,7 +37,7 @@ export default async (input) => {
       try {
         await run("write", {filePath:"smoke.txt",content:"draft\\n"});
         await run("edit", {filePath:"smoke.txt",oldString:"draft",newString:"reviewable"});
-        await run("shell", {command:"printf 'command\\\\n' > command.txt"});
+        await run("shell", {command:process.platform === "win32" ? "Set-Content -LiteralPath command.txt -Value command" : "printf 'command\\\\n' > command.txt"});
         assert.match(await run("read", {filePath:"smoke.txt"}), /1: reviewable/);
         assert.equal(existsSync(join(input.directory,"smoke.txt")), false);
         assert.equal(existsSync(join(input.directory,"command.txt")), false);
@@ -69,9 +69,10 @@ export default async (input) => {
   }));
   writeFileSync(join(project, "deltabox.json"), JSON.stringify({
     stateDir: join(root, "backend-state"), runtimeDir: join(root, "backend-runtime"),
-    filesystem: { mode: "copy-private", require: true },
+    ...(process.env.DELTABOX_TEST_POLICY ? { policy: process.env.DELTABOX_TEST_POLICY } : {}),
+    filesystem: { mode: process.platform === "win32" ? "cbcow-private" : "copy-private", require: true },
   }));
-  const env = Object.fromEntries(["PATH", "HOME", "TMPDIR", "SHELL", "LANG"].filter((key) => process.env[key]).map((key) => [key, process.env[key]]));
+  const env = Object.fromEntries(["PATH", "HOME", "TMPDIR", "SHELL", "LANG", "SystemRoot", "WINDIR", "SystemDrive", "LOCALAPPDATA", "APPDATA", "USERPROFILE", "TEMP", "TMP"].filter((key) => process.env[key]).map((key) => [key, process.env[key]]));
   for (const [key, folder] of Object.entries({ XDG_CONFIG_HOME: "config", XDG_DATA_HOME: "data", XDG_CACHE_HOME: "cache", XDG_STATE_HOME: "state", DEVECO_TEST_HOME: "home" })) {
     env[key] = join(root, folder);
     mkdirSync(env[key], { recursive: true });

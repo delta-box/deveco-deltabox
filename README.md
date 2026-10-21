@@ -38,7 +38,7 @@ Run `/sandbox-status` to check the backend and actual filesystem mode. The plugi
 
 `glob` and `grep` require `rg` on PATH. The sandbox shell invokes the host's `shell.env` hook, preserving toolchain PATH entries, authentication sources, and other injected environment variables, and passes them to Deltabox as structured arguments. The host generally prefers its bundled CLI; you can also invoke an installed `devecocli` by its absolute path in the shell. Configure SDK, Java, and other paths according to the [official DevEco CLI instructions](https://gitcode.com/openharmony-sig/deveco-cli).
 
-macOS is currently the platform supported by both the official DevEco distribution and Deltabox. The adapter also accepts compatible hosts on Linux; initialization is explicitly rejected on Windows. The plugin uses DevEco's `@opencode-ai/plugin` interface, pinned to `1.17.9`.
+The adapter supports macOS and compatible hosts on Linux and Windows. The plugin uses DevEco's `@opencode-ai/plugin` interface, pinned to `1.17.9`.
 
 ## Capabilities aligned with Pi / DeepSeek Harness
 

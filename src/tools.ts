@@ -19,7 +19,7 @@ function result(value: NativeExecResult, allowNoMatches = false): string {
 
 export function makeTools(getRuntime: () => Runtime): Record<string, ToolDefinition> {
   const shell = tool({
-    description: "Run a foreground Bash command through Deltabox, including devecocli commands. The native runtime has a fixed 600-second deadline; no PTY, stdin or background jobs. Changes remain reviewable.",
+    description: `Run a foreground ${process.platform === "win32" ? "PowerShell 7" : "Bash"} command through Deltabox, including devecocli commands. Use relative project paths. The native runtime has a fixed 600-second deadline; no PTY, stdin or background jobs. Changes remain reviewable.`,
     args: {
       command: z.string(), description: z.string().optional(), workdir: z.string().optional(),
       timeout: z.number().int().positive().optional().describe("Only 600000 ms is supported; omit to use the runtime deadline"),

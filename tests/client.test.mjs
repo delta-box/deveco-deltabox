@@ -8,10 +8,12 @@ import { parseConfig } from "../dist/config.js";
 
 function server(t, body, config = {}) {
   const project = mkdtempSync(join(tmpdir(), "deveco-transport-"));
-  const bin = join(project, "backend");
+  const bin = join(project, process.platform === "win32" ? "backend.cjs" : "backend");
   writeFileSync(bin, `#!${process.execPath}\nconst fs = require("node:fs");\nfs.appendFileSync("starts", process.pid + "\\n");\n${body}`, { mode: 0o755 });
-  const client = new DeltaboxClient(project, parseConfig({ transport: "serve", bin, timeoutMs: 2000, ...config }));
-  t.after(async () => { await client.stop(); rmSync(project, { recursive: true, force: true }); });
+  const client = new DeltaboxClient(project, parseConfig({ transport: "serve", bin: process.platform === "win32" ? process.execPath : bin, timeoutMs: 2000, ...config }));
+  // Windows does not execute shebang files. Node runs the command-named fixture.
+  if (process.platform === "win32") for (const name of ["serve", "session"]) writeFileSync(join(project, name), readFileSync(bin));
+  t.after(async () => { await client.stop(); rmSync(project, { recursive: true, force: true, maxRetries: 10, retryDelay: 50 }); });
   return { client, project };
 }
 

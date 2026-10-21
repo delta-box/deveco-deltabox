@@ -43,7 +43,7 @@ function canonicalStatePath(path: string): string {
 }
 
 /** Invalid policy/configuration is an error, never a silent fallback to defaults. */
-export function loadConfig(project: string, userFile = join(
+export function loadConfig(project: string, userFile = process.env.DEVECO_DELTABOX_CONFIG || join(
   process.env.XDG_CONFIG_HOME || join(homedir(), ".config"), "deveco", "deltabox.json",
 )): Config {
   let result = parseConfig({});
@@ -72,6 +72,6 @@ export function loadConfig(project: string, userFile = join(
   for (const key of ["stateDir", "runtimeDir"] as const) {
     if (result[key]) result[key] = canonicalStatePath(result[key]);
   }
-  if (result.bin.includes("/")) result.bin = resolve(project, result.bin);
+  if (/[\\/]/.test(result.bin)) result.bin = resolve(project, result.bin);
   return result;
 }

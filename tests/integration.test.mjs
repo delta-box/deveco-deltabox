@@ -48,8 +48,8 @@ test("invalid config and unsupported platforms leave guards active", async () =>
   const hooks = await createPlugin(input(), deps);
   await assert.rejects(hooks["tool.execute.before"]({ tool: "write" }, { args: {} }), /bad policy/);
   await assert.rejects(async () => hooks.tool.write.execute({ filePath: "a", content: "a" }, context()), /bad policy/);
-  const unsupported = await createPlugin(input(), { ...dependencies(), platform: "win32" });
-  await assert.rejects(unsupported["tool.execute.before"]({ tool: "shell" }, { args: {} }), /does not support win32/);
+  const unsupported = await createPlugin(input(), { ...dependencies(), platform: "freebsd" });
+  await assert.rejects(unsupported["tool.execute.before"]({ tool: "shell" }, { args: {} }), /does not support freebsd/);
 });
 
 test("config preserves permissions and commands, disables host writers and enables human review", async () => {

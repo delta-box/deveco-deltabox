@@ -5,6 +5,8 @@ import { once } from "node:events";
 import { mkdtempSync, mkdirSync, writeFileSync, realpathSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
+import { pathToFileURL } from "node:url";
+import { rm } from "node:fs/promises";
 import { setTimeout as delay } from "node:timers/promises";
 
 export async function until(read, accept = Boolean, timeout = 30000) {
@@ -41,7 +43,7 @@ export async function startHost() {
         const plan = label.startsWith("mode-") ? [
           ["write", { filePath: `${label}-first.txt`, content: "first\n" }],
           ["read", { filePath: `${label}-first.txt` }],
-          ["shell", { command: ":", description: "Read-only command produces no changes" }],
+          ["shell", { command: process.platform === "win32" ? "Write-Output ok" : ":", description: "Read-only command produces no changes" }],
           ["write", { filePath: `${label}-second.txt`, content: "second\n" }],
         ] : label === "subagent" ? [
           ["task", { description: "Exercise a foreground child agent", prompt: "[case:child] Write child.txt for the Deltabox test.", subagent_type: "general" }],
@@ -49,7 +51,7 @@ export async function startHost() {
           ["write", { filePath: "accept.txt", content: "draft\n" }],
           ["edit", { filePath: "accept.txt", oldString: "draft", newString: "reviewed" }],
           ["apply_patch", { patchText: "*** Begin Patch\n*** Add File: patch.txt\n+patched\n*** End Patch" }],
-          ["shell", { command: "printf '%s' \"$DELTABOX_E2E_ENV\" > environment.txt" + (process.env.DEVECO_CLI_BIN ? `; '${process.env.DEVECO_CLI_BIN.replaceAll("'", "'\\''")}' --version` : ""), description: "Check toolchain environment through Deltabox" }],
+          ["shell", { command: process.platform === "win32" ? "Set-Content -LiteralPath environment.txt -Value $env:DELTABOX_E2E_ENV -NoNewline" : "printf '%s' \"$DELTABOX_E2E_ENV\" > environment.txt" + (process.env.DEVECO_CLI_BIN ? `; '${process.env.DEVECO_CLI_BIN.replaceAll("'", "'\\''")}' --version` : ""), description: "Check toolchain environment through Deltabox" }],
         ] : [["write", { filePath: `${label}.txt`, content: `${label}\n` }]];
         call = plan[step];
       }
@@ -67,14 +69,15 @@ export async function startHost() {
   const fixture = join(root, "plugin.mjs");
   writeFileSync(fixture, `import plugin from ${JSON.stringify(plugin)};\nexport default async input => { const hooks = await plugin(input); return {...hooks, "shell.env": async (_input, output) => { output.env.DELTABOX_E2E_ENV = "literal $() ' \\\" value"; }}; };\n`);
   writeFileSync(join(project, "deveco.json"), JSON.stringify({
-    plugin: [fixture], permission: "allow", model: "adapter-test/test", small_model: "adapter-test/test",
+    plugin: [pathToFileURL(fixture).href], permission: "allow", model: "adapter-test/test", small_model: "adapter-test/test",
     provider: { "adapter-test": { npm: "@ai-sdk/openai-compatible", name: "Local adapter test", options: { baseURL: `http://127.0.0.1:${model.address().port}/v1`, apiKey: "unused" }, models: { test: { name: "Local test", tool_call: true, limit: { context: 128000, output: 8192 } } } } },
   }));
   writeFileSync(join(project, "deltabox.json"), JSON.stringify({
     stateDir: join(root, "backend-state"), runtimeDir: join(root, "backend-runtime"),
-    filesystem: { mode: "copy-private", require: true },
+    ...(process.env.DELTABOX_TEST_POLICY ? { policy: process.env.DELTABOX_TEST_POLICY } : {}),
+    filesystem: { mode: process.platform === "win32" ? "cbcow-private" : "copy-private", require: true },
   }));
-  const env = Object.fromEntries(["PATH", "HOME", "TMPDIR", "SHELL", "LANG"].filter((key) => process.env[key]).map((key) => [key, process.env[key]]));
+  const env = Object.fromEntries(["PATH", "HOME", "TMPDIR", "SHELL", "LANG", "SystemRoot", "WINDIR", "SystemDrive", "LOCALAPPDATA", "APPDATA", "USERPROFILE", "TEMP", "TMP"].filter((key) => process.env[key]).map((key) => [key, process.env[key]]));
   for (const [key, folder] of Object.entries({ XDG_CONFIG_HOME: "config", XDG_DATA_HOME: "data", XDG_CACHE_HOME: "cache", XDG_STATE_HOME: "state", DEVECO_TEST_HOME: "home" })) {
     env[key] = join(root, folder);
     mkdirSync(env[key], { recursive: true });
@@ -85,10 +88,13 @@ export async function startHost() {
   child.stdout.on("data", (data) => { log += data; });
   child.stderr.on("data", (data) => { log += data; });
   const close = async () => {
+    if (url && child.exitCode === null) {
+      await fetch(`${url}/instance/dispose`, { method: "POST", headers: { "x-deveco-directory": project }, signal: AbortSignal.timeout(10000) }).catch(() => {});
+    }
     child.kill("SIGTERM");
     if (child.exitCode === null) await Promise.race([once(child, "exit"), delay(3000).then(() => child.kill("SIGKILL"))]);
     model.closeAllConnections(); model.close();
-    if (!process.env.DEVECO_E2E_KEEP) rmSync(root, { recursive: true, force: true });
+    if (!process.env.DEVECO_E2E_KEEP) await rm(root, { recursive: true, force: true, maxRetries: 10, retryDelay: 100 });
     else writeFileSync(join(root, "host.log"), log);
   };
   let url;

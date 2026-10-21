@@ -48,7 +48,7 @@ export async function createPlugin(input: HostInput, dependencies: Dependencies 
     if (failure) throw failure;
     if (!runtime) {
       try {
-        if (!["darwin", "linux"].includes(dependencies.platform)) throw new Error(`Deltabox does not support ${dependencies.platform}; use a supported macOS/Linux host`);
+        if (!["darwin", "linux", "win32"].includes(dependencies.platform)) throw new Error(`Deltabox does not support ${dependencies.platform}`);
         if (input.experimental_capabilities?.sessionStopping !== 1 || input.experimental_capabilities?.commandResult !== 1 || input.experimental_capabilities?.shellEnv !== 1) {
           throw new Error("Deltabox requires the patched DevEco Code host (sessionStopping, commandResult and shellEnv v1). See host/README.md. No project tool was executed.");
         }
