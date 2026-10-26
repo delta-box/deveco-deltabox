@@ -1,5 +1,51 @@
+diff --git a/bun.lock b/bun.lock
+index 93ec1b545..415355dc2 100644
+--- a/bun.lock
++++ b/bun.lock
+@@ -390,6 +390,9 @@
+         "vscode-languageserver-types": "3.17.5",
+         "why-is-node-running": "3.2.2",
+       },
++      "optionalDependencies": {
++        "deltabox-lite": "0.1.4",
++      },
+     },
+     "packages/plugin": {
+       "name": "@opencode-ai/plugin",
+@@ -1937,6 +1940,18 @@
+ 
+     "delayed-stream": ["delayed-stream@1.0.0", "https://registry.npmmirror.com/delayed-stream/-/delayed-stream-1.0.0.tgz", {}, "sha512-ZySD7Nf91aLB0RxL4KGrKHBXl7Eds1DAmEdcoVawXnLD7SDhpNgtuII2aAkg7a7QS41jxPSZ17p4VdGnMHk3MQ=="],
+ 
++    "deltabox-lite": ["deltabox-lite@0.1.4", "", { "optionalDependencies": { "deltabox-lite-darwin-arm64": "0.1.4", "deltabox-lite-darwin-x64": "0.1.4", "deltabox-lite-linux-arm64": "0.1.4", "deltabox-lite-linux-x64": "0.1.4", "deltabox-lite-windows-x64": "0.1.4" }, "os": [ "linux", "win32", "darwin", ], "bin": { "deltabox": "bin/deltabox.js" } }, "sha512-ctqF2YmXTNKkhSYNl/JoOScYuXpj4rV3+NBhRenMAfl7ErYmg6ia9Cv9qBTx5dksn62Hfci4XIwU7o2jY9UIhQ=="],
++
++    "deltabox-lite-darwin-arm64": ["deltabox-lite-darwin-arm64@0.1.4", "", { "os": "darwin", "cpu": "arm64" }, "sha512-ps7Rn2v6WRxCuH5DX84r81WNXRtghW2bT9UFprxaXT/poLUzcxYKcb/YFqciGtB7l3UsF8lzstr0Uy6uQvB2HA=="],
++
++    "deltabox-lite-darwin-x64": ["deltabox-lite-darwin-x64@0.1.4", "", { "os": "darwin", "cpu": "x64" }, "sha512-eizY/l01bNKco7GfJAmqSvwRpCQttQs54cJ2nhX92Y2Zuy4HSIieaUQvPu1awXouS+3Bf60EtHKumcZkel5Ekg=="],
++
++    "deltabox-lite-linux-arm64": ["deltabox-lite-linux-arm64@0.1.4", "", { "os": "linux", "cpu": "arm64" }, "sha512-+3van7pJIlvgC27W0liSXwbOskA6FrW6vk70di77PEzVPAWm6MemOghkWi/3bavaOtCkWV8z3V/UEfrsjlW/BQ=="],
++
++    "deltabox-lite-linux-x64": ["deltabox-lite-linux-x64@0.1.4", "", { "os": "linux", "cpu": "x64" }, "sha512-hsr8fjBZdY/ZlGM2Mf37uKiTvsoSbgdhYFRTEORZ1yMYX847ZWRkNGZOSuznx7p75fOVjETP4rZF2iG43EpOhA=="],
++
++    "deltabox-lite-windows-x64": ["deltabox-lite-windows-x64@0.1.4", "", { "os": "win32", "cpu": "x64" }, "sha512-aNMNcfcDAPV02MhXknsUKmD6Dg3Laepe5Vn8MAUV3ERQhhXIWazPPHUZ0yeCDDjmsaND1N00JMN4KS4ThY5dGw=="],
++
+     "denque": ["denque@2.1.0", "https://registry.npmmirror.com/denque/-/denque-2.1.0.tgz", {}, "sha512-HVQE3AAb/pxF8fQAoiqpvg9i3evqug3hoiwakOyZAwJm+6vZehbkYXZ0l4JxS+I3QxM97v5aaRNhj8v5oBhekw=="],
+ 
+     "depd": ["depd@2.0.0", "https://registry.npmmirror.com/depd/-/depd-2.0.0.tgz", {}, "sha512-g7nH6P6dyDioJogAAGprGpCtVImJhpPk/roCzdb3fIh61/s/nPsfR6onyMwkCAR/OlC3yBC0lESvUoQEAssIrw=="],
+diff --git a/bunfig.toml b/bunfig.toml
+index 2fb9df3ad..e600a4a58 100644
+--- a/bunfig.toml
++++ b/bunfig.toml
+@@ -2,7 +2,7 @@
+ exact = true
+ # Only install newly resolved package versions published at least 3 days ago.
+ minimumReleaseAge = 259200
+-minimumReleaseAgeExcludes = ["@ai-sdk/amazon-bedrock", "@ai-sdk/anthropic", "@opentui/core", "@opentui/core-darwin-arm64", "@opentui/core-darwin-x64", "@opentui/core-linux-arm64", "@opentui/core-linux-arm64-musl", "@opentui/core-linux-x64", "@opentui/core-linux-x64-musl", "@opentui/core-win32-arm64", "@opentui/core-win32-x64", "@opentui/keymap", "@opentui/solid", "opentui-spinner", "gitlab-ai-provider", "opencode-gitlab-auth", "@ff-labs/fff-node", "@ff-labs/fff-bun", "@ff-labs/fff-bin-darwin-arm64", "@ff-labs/fff-bin-darwin-x64", "@ff-labs/fff-bin-linux-arm64-gnu", "@ff-labs/fff-bin-linux-arm64-musl", "@ff-labs/fff-bin-linux-x64-gnu", "@ff-labs/fff-bin-linux-x64-musl", "@ff-labs/fff-bin-win32-arm64", "@ff-labs/fff-bin-win32-x64", "@pierre/diffs", "@pierre/theming", "app-builder-lib", "dmg-builder", "electron-builder", "electron-publish", "@deveco/deveco-cli", "@deveco/deveco-cli-common", "@deveco/deveco-cli-openharmony-arm64", "ui-verification-mcp", "@types/bun", "bun-types"]
++minimumReleaseAgeExcludes = ["deltabox-lite", "deltabox-lite-darwin-arm64", "deltabox-lite-darwin-x64", "deltabox-lite-linux-arm64", "deltabox-lite-linux-x64", "deltabox-lite-windows-x64", "@ai-sdk/amazon-bedrock", "@ai-sdk/anthropic", "@opentui/core", "@opentui/core-darwin-arm64", "@opentui/core-darwin-x64", "@opentui/core-linux-arm64", "@opentui/core-linux-arm64-musl", "@opentui/core-linux-x64", "@opentui/core-linux-x64-musl", "@opentui/core-win32-arm64", "@opentui/core-win32-x64", "@opentui/keymap", "@opentui/solid", "opentui-spinner", "gitlab-ai-provider", "opencode-gitlab-auth", "@ff-labs/fff-node", "@ff-labs/fff-bun", "@ff-labs/fff-bin-darwin-arm64", "@ff-labs/fff-bin-darwin-x64", "@ff-labs/fff-bin-linux-arm64-gnu", "@ff-labs/fff-bin-linux-arm64-musl", "@ff-labs/fff-bin-linux-x64-gnu", "@ff-labs/fff-bin-linux-x64-musl", "@ff-labs/fff-bin-win32-arm64", "@ff-labs/fff-bin-win32-x64", "@pierre/diffs", "@pierre/theming", "app-builder-lib", "dmg-builder", "electron-builder", "electron-publish", "@deveco/deveco-cli", "@deveco/deveco-cli-common", "@deveco/deveco-cli-openharmony-arm64", "ui-verification-mcp", "@types/bun", "bun-types"]
+ 
+ [test]
+ root = "./do-not-run-tests-from-root"
 diff --git a/packages/app/src/i18n/en.ts b/packages/app/src/i18n/en.ts
-index 28eb114..51714ad 100644
+index 28eb114c9..51714ad99 100644
 --- a/packages/app/src/i18n/en.ts
 +++ b/packages/app/src/i18n/en.ts
 @@ -574,6 +574,20 @@ export const dict = {
@@ -24,7 +70,7 @@ index 28eb114..51714ad 100644
    "notification.permission.description": "{{sessionTitle}} in {{projectName}} needs permission",
    "notification.question.title": "Question",
 diff --git a/packages/app/src/i18n/zh.ts b/packages/app/src/i18n/zh.ts
-index 7a60692..faf4452 100644
+index 7a60692af..faf4452f4 100644
 --- a/packages/app/src/i18n/zh.ts
 +++ b/packages/app/src/i18n/zh.ts
 @@ -492,6 +492,20 @@ export const dict = {
@@ -49,7 +95,7 @@ index 7a60692..faf4452 100644
    "notification.permission.description": "{{sessionTitle}}（{{projectName}}）需要权限",
    "notification.question.title": "问题",
 diff --git a/packages/app/src/pages/session/composer/session-permission-dock.tsx b/packages/app/src/pages/session/composer/session-permission-dock.tsx
-index 06ff4f4..7f6a0f2 100644
+index 06ff4f4aa..7f6a0f2fc 100644
 --- a/packages/app/src/pages/session/composer/session-permission-dock.tsx
 +++ b/packages/app/src/pages/session/composer/session-permission-dock.tsx
 @@ -1,4 +1,5 @@
@@ -165,7 +211,7 @@ index 06ff4f4..7f6a0f2 100644
            <span data-slot="permission-spacer" aria-hidden="true" />
            <div data-slot="permission-patterns">
 diff --git a/packages/app/src/pages/session/timeline/message-timeline.tsx b/packages/app/src/pages/session/timeline/message-timeline.tsx
-index 5a26f17..3090eab 100644
+index 5a26f1781..3090eab73 100644
 --- a/packages/app/src/pages/session/timeline/message-timeline.tsx
 +++ b/packages/app/src/pages/session/timeline/message-timeline.tsx
 @@ -68,6 +68,7 @@ import { notifySessionTabsRemoved } from "@/components/titlebar-session-events"
@@ -215,8 +261,181 @@ index 5a26f17..3090eab 100644
                  reasoningHeading={thinkingRow().reasoningHeading}
                  showReasoningSummaries={settings.general.showReasoningSummaries()}
                />
+diff --git a/packages/core/src/util/deltabox-review.ts b/packages/core/src/util/deltabox-review.ts
+new file mode 100644
+index 000000000..45ac0baf4
+--- /dev/null
++++ b/packages/core/src/util/deltabox-review.ts
+@@ -0,0 +1,36 @@
++export type DeltaboxChange = {
++  path: string
++  kind: "added" | "modified" | "deleted"
++  added_lines: number
++  removed_lines: number
++  is_binary: boolean
++}
++
++// Permission metadata can also come from third-party plugins or older sessions.
++// Both renderers use the same validation before displaying a review summary.
++export function deltaboxReview(metadata: Record<string, unknown> = {}) {
++  const changes = Array.isArray(metadata.changes) ? metadata.changes.filter(isChange) : []
++  const mode = metadata.reviewMode === "tool" || metadata.reviewMode === "risky" ? metadata.reviewMode : "task"
++  const count = nonnegative(metadata.pendingChanges) ? metadata.pendingChanges : changes.length
++  return { changes, mode, count }
++}
++
++function nonnegative(value: unknown): value is number {
++  return typeof value === "number" && Number.isSafeInteger(value) && value >= 0
++}
++
++function isChange(value: unknown): value is DeltaboxChange {
++  if (!value || typeof value !== "object") return false
++  return (
++    "path" in value &&
++    typeof value.path === "string" &&
++    "kind" in value &&
++    (value.kind === "added" || value.kind === "modified" || value.kind === "deleted") &&
++    "added_lines" in value &&
++    nonnegative(value.added_lines) &&
++    "removed_lines" in value &&
++    nonnegative(value.removed_lines) &&
++    "is_binary" in value &&
++    typeof value.is_binary === "boolean"
++  )
++}
+diff --git a/packages/core/src/v1/config/config.ts b/packages/core/src/v1/config/config.ts
+index c7d56999b..8a1ad638e 100644
+--- a/packages/core/src/v1/config/config.ts
++++ b/packages/core/src/v1/config/config.ts
+@@ -54,6 +54,9 @@ export const Info = Schema.Struct({
+       "Enable or disable snapshot tracking. When false, filesystem snapshots are not recorded and undoing or reverting will not undo/redo file changes. Defaults to true.",
+   }),
+   plugin: Schema.optional(Schema.mutable(Schema.Array(ConfigPluginV1.Spec))),
++  deltabox: Schema.optional(Schema.Boolean).annotate({
++    description: "Enable the bundled Deltabox plugin for reviewable file and shell operations. Defaults to false.",
++  }),
+   share: Schema.optional(Schema.Literals(["manual", "auto", "disabled"])).annotate({
+     description:
+       "Control sharing behavior:'manual' allows manual sharing via commands, 'auto' enables automatic sharing, 'disabled' disables all sharing",
+diff --git a/packages/opencode/package.json b/packages/opencode/package.json
+index 0c0050ba7..a2e146c06 100644
+--- a/packages/opencode/package.json
++++ b/packages/opencode/package.json
+@@ -159,5 +159,8 @@
+   },
+   "overrides": {
+     "drizzle-orm": "catalog:"
++  },
++  "optionalDependencies": {
++    "deltabox-lite": "0.1.4"
+   }
+ }
+diff --git a/packages/opencode/script/build.ts b/packages/opencode/script/build.ts
+index b5a5a7cfc..efad8af20 100755
+--- a/packages/opencode/script/build.ts
++++ b/packages/opencode/script/build.ts
+@@ -17,6 +17,7 @@ const generated = await import("./generate.ts")
+ 
+ import { Script } from "@opencode-ai/script"
+ import pkg from "../package.json"
++import { bundleDeltabox } from "./vendor-deltabox"
+ import {
+   bundleDevecoCliVendor,
+   resolveDevecoCliVersionFromPackageJson,
+@@ -297,7 +298,7 @@ for (const item of targets) {
+     conditions: ["bun", "node"],
+     tsconfig: "./tsconfig.json",
+     plugins: [plugin],
+-    external: ["node-gyp"],
++    external: ["node-gyp", "deltabox-lite"],
+     format: "esm",
+     minify: true,
+     sourcemap: sourcemapsFlag ? "linked" : "none",
+@@ -346,6 +347,14 @@ for (const item of targets) {
+ 
+   await $`rm -rf ./dist/${name}/bin/tui`
+ 
++  await bundleDeltabox({
++    version: pkg.optionalDependencies["deltabox-lite"],
++    cacheDir,
++    vendorDir: path.join(dir, "dist", name, "vendor", "deltabox"),
++    target: item,
++    offline: offlineVendorFlag,
++  })
++
+   await copyUiVerificationRuntime(name)
+ 
+   // Copy ripgrep from cache
+diff --git a/packages/opencode/script/vendor-deltabox.ts b/packages/opencode/script/vendor-deltabox.ts
+new file mode 100644
+index 000000000..088e7bc2e
+--- /dev/null
++++ b/packages/opencode/script/vendor-deltabox.ts
+@@ -0,0 +1,62 @@
++import { $ } from "bun"
++import fs from "node:fs/promises"
++import path from "node:path"
++
++export async function bundleDeltabox(opts: {
++  version: string
++  cacheDir: string
++  vendorDir: string
++  target: { os: string; arch: string }
++  offline?: boolean
++}) {
++  await fs.mkdir(opts.vendorDir, { recursive: true })
++  const source = path.resolve(import.meta.dir, "../src/plugin/deltabox")
++  for (const name of ["LICENSE", "NOTICE.md"]) {
++    await fs.copyFile(path.join(source, name), path.join(opts.vendorDir, name))
++  }
++  if (!["darwin", "linux", "win32"].includes(opts.target.os)) return
++  if (!["arm64", "x64"].includes(opts.target.arch) || (opts.target.os === "win32" && opts.target.arch !== "x64"))
++    throw new Error("Unsupported Deltabox architecture")
++  if (!/^\d+\.\d+\.\d+$/.test(opts.version)) throw new Error("Deltabox runtime version must be pinned")
++  const target = `${opts.target.os}-${opts.target.arch}`
++  const name = `deltabox-lite-${opts.target.os === "win32" ? "windows" : opts.target.os}-${opts.target.arch}`
++  const binary = opts.target.os === "win32" ? "deltabox.exe" : "deltabox"
++  const cache = path.join(opts.cacheDir, "deltabox", opts.version, target)
++  const pkg = path.join(cache, "node_modules", name)
++  const manifest = Bun.file(path.join(pkg, "package.json"))
++  const ready =
++    (await manifest.exists()) &&
++    (await manifest.json()).version === opts.version &&
++    (await Bun.file(path.join(pkg, "bin", binary)).exists()) &&
++    (await Bun.file(path.join(pkg, "native/deltabox.node")).exists()) &&
++    (await Bun.file(path.join(pkg, "LICENSE")).exists())
++  if (!ready) {
++    if (opts.offline) throw new Error(`Offline vendor cache miss for deltabox-lite@${opts.version} (${target})`)
++    await fs.rm(cache, { recursive: true, force: true })
++    await fs.mkdir(cache, { recursive: true })
++    await Bun.write(
++      path.join(cache, "package.json"),
++      JSON.stringify({
++        name: "deveco-deltabox-vendor",
++        private: true,
++        dependencies: { [name]: opts.version },
++      }),
++    )
++    const registry = process.env.NPM_REGISTRY ? [`--registry=${process.env.NPM_REGISTRY}`] : []
++    await $`${process.execPath} install --production --ignore-scripts --linker=hoisted --os=${opts.target.os} --cpu=${opts.target.arch} ${registry}`.cwd(
++      cache,
++    )
++    if ((await Bun.file(path.join(pkg, "package.json")).json()).version !== opts.version)
++      throw new Error("Unexpected Deltabox runtime version")
++  }
++  // Keep sidecars outside node_modules: npm pack excludes nested node_modules.
++  // Copy failures (including a missing addon) fail the release build.
++  await fs.copyFile(path.join(pkg, "bin", binary), path.join(opts.vendorDir, binary))
++  await fs.chmod(path.join(opts.vendorDir, binary), 0o755)
++  await fs.copyFile(path.join(pkg, "native/deltabox.node"), path.join(opts.vendorDir, "deltabox.node"))
++  await fs.copyFile(path.join(pkg, "LICENSE"), path.join(opts.vendorDir, "RUNTIME-LICENSE"))
++  await Bun.write(
++    path.join(opts.vendorDir, "runtime.json"),
++    JSON.stringify({ name, version: opts.version, target }, null, 2) + "\n",
++  )
++}
 diff --git a/packages/opencode/src/effect/bridge.ts b/packages/opencode/src/effect/bridge.ts
-index 9c09fcb..200ea38 100644
+index 9c09fcb83..200ea387f 100644
 --- a/packages/opencode/src/effect/bridge.ts
 +++ b/packages/opencode/src/effect/bridge.ts
 @@ -5,7 +5,7 @@ import { InstanceRef, WorkspaceRef } from "./instance-ref"
@@ -240,10 +459,26 @@ index 9c09fcb..200ea38 100644
          restoreWorkspace(workspace, () => Effect.runFork(wrap(effect))),
        run: <A, E, R>(effect: Effect.Effect<A, E, R>) =>
 diff --git a/packages/opencode/src/plugin/index.ts b/packages/opencode/src/plugin/index.ts
-index 0c4030e..41ad333 100644
+index 0c4030ef5..bb007f05b 100644
 --- a/packages/opencode/src/plugin/index.ts
 +++ b/packages/opencode/src/plugin/index.ts
-@@ -156,6 +156,7 @@ export const layer = Layer.effect(
+@@ -1,4 +1,5 @@
+ import { LayerNode } from "@opencode-ai/core/effect/layer-node"
++import { RipgrepBinary } from "@opencode-ai/core/ripgrep/binary"
+ import type {
+   Hooks,
+   PluginInput,
+@@ -134,6 +135,9 @@ export const layer = Layer.effect(
+     const events = yield* EventV2Bridge.Service
+     const config = yield* Config.Service
+     const flags = yield* RuntimeFlags.Service
++    const ripgrep = yield* Effect.cached(
++      RipgrepBinary.Service.use((binary) => binary.filepath).pipe(Effect.provide(RipgrepBinary.defaultLayer)),
++    )
+ 
+     const state = yield* InstanceState.make<State>(
+       Effect.fn("Plugin.state")(function* (ctx) {
+@@ -156,6 +160,7 @@ export const layer = Layer.effect(
          const cfg = yield* config.get()
          const input: PluginInput = {
            client,
@@ -251,8 +486,33 @@ index 0c4030e..41ad333 100644
            project: ctx.project,
            worktree: ctx.worktree,
            directory: ctx.directory,
+@@ -248,6 +253,24 @@ export const layer = Layer.effect(
+           )
+         }
+ 
++        // An explicitly enabled sandbox must load last and must never fall back
++        // to unguarded host tools if registration fails.
++        if (cfg.deltabox) {
++          yield* Effect.promise(async () => {
++            if (hooks.some((hook) => hook.tool?.sandbox_review)) {
++              throw new Error("Remove the external Deltabox plugin before enabling the built-in deltabox option.")
++            }
++            const { createPlugin } = await import("./deltabox/integration")
++            hooks.push(
++              await createPlugin({
++                ...input,
++                shell: cfg.shell,
++                ripgrep: () => bridge.promise(ripgrep),
++              }),
++            )
++          })
++        }
++
+         // Notify plugins of current config
+         for (const hook of hooks) {
+           yield* Effect.tryPromise({
 diff --git a/packages/opencode/src/session/prompt.ts b/packages/opencode/src/session/prompt.ts
-index 96caa86..d3c5761 100644
+index 96caa86d8..d3c576196 100644
 --- a/packages/opencode/src/session/prompt.ts
 +++ b/packages/opencode/src/session/prompt.ts
 @@ -62,6 +62,7 @@ import { eq } from "drizzle-orm"
@@ -338,8 +598,211 @@ index 96caa86..d3c5761 100644
        const result = yield* Effect.gen(function* () {
          if (!isDebugCommand)
            return yield* promptImpl({
+diff --git a/packages/opencode/src/session/stopping.ts b/packages/opencode/src/session/stopping.ts
+new file mode 100644
+index 000000000..cdd11eac2
+--- /dev/null
++++ b/packages/opencode/src/session/stopping.ts
+@@ -0,0 +1,50 @@
++import { Effect } from "effect"
++import { EffectBridge } from "@/effect/bridge"
++import { InstanceState } from "@/effect/instance-state"
++import { Plugin } from "@/plugin"
++import { Permission } from "@/permission"
++import { Agent } from "@/agent/agent"
++import { Session } from "./session"
++import { SessionID, MessageID } from "./schema"
++
++export const run = Effect.fn("SessionStopping.run")(function* (input: {
++  sessionID: SessionID
++  messageID: MessageID
++  agent: string
++}) {
++  const plugin = yield* Plugin.Service
++  const permission = yield* Permission.Service
++  const bridge = yield* EffectBridge.make()
++  const ctx = yield* InstanceState.context
++  const session = yield* (yield* Session.Service).get(input.sessionID).pipe(Effect.orDie)
++  const agent = yield* (yield* Agent.Service).get(input.agent)
++  yield* Effect.promise((signal) =>
++    bridge.promise(
++      plugin.trigger(
++        "session.turn.stopping",
++        {
++          ...input,
++          directory: ctx.directory,
++          worktree: ctx.worktree,
++          abort: signal,
++          metadata() {},
++          ask: (request) =>
++            bridge.promise(
++              permission
++                .ask({
++                  ...request,
++                  sessionID: input.sessionID,
++                  ruleset: Permission.merge(agent?.permission ?? [], session.permission ?? []),
++                })
++                .pipe(Effect.orDie),
++              { signal },
++            ),
++        },
++        {},
++      ),
++      { signal },
++    ),
++  )
++})
++
++export * as SessionStopping from "./stopping"
+diff --git a/packages/opencode/src/session/tools.ts b/packages/opencode/src/session/tools.ts
+index 8ec7af755..e74b3ad31 100644
+--- a/packages/opencode/src/session/tools.ts
++++ b/packages/opencode/src/session/tools.ts
+@@ -100,7 +100,7 @@ export const resolve = Effect.fn("SessionTools.resolve")(function* (input: {
+             return yield* Effect.gen(function* () {
+               yield* plugin.trigger(
+                 "tool.execute.before",
+-                { tool: item.id, sessionID: ctx.sessionID, callID: ctx.callID },
++                { tool: item.id, sessionID: ctx.sessionID, callID: ctx.callID, source: item.source ?? "builtin" },
+                 { args },
+               )
+               const result = yield* item.execute(args, ctx)
+@@ -153,7 +153,7 @@ export const resolve = Effect.fn("SessionTools.resolve")(function* (input: {
+           return yield* Effect.gen(function* () {
+             yield* plugin.trigger(
+               "tool.execute.before",
+-              { tool: key, sessionID: ctx.sessionID, callID: opts.toolCallId },
++              { tool: key, sessionID: ctx.sessionID, callID: opts.toolCallId, source: "mcp" },
+               { args },
+             )
+             const result: Awaited<ReturnType<NonNullable<typeof execute>>> = yield* Effect.gen(function* () {
+diff --git a/packages/opencode/src/tool/lsp.ts b/packages/opencode/src/tool/lsp.ts
+index a605cea74..8bde04968 100644
+--- a/packages/opencode/src/tool/lsp.ts
++++ b/packages/opencode/src/tool/lsp.ts
+@@ -8,7 +8,7 @@ import { pathToFileURL } from "url"
+ import { assertExternalDirectoryEffect } from "./external-directory"
+ import { FSUtil } from "@opencode-ai/core/fs-util"
+ 
+-const operations = [
++export const operations = [
+   "goToDefinition",
+   "findReferences",
+   "hover",
+@@ -60,54 +60,66 @@ export const LspTool = Tool.define(
+             metadata: meta,
+           })
+ 
+-          const uri = pathToFileURL(file).href
+-          const position = { file, line: args.line - 1, character: args.character - 1 }
+-          const relPath = path.relative(instance.worktree, file)
+-          const detail =
+-            args.operation === "workspaceSymbol"
+-              ? ""
+-              : args.operation === "documentSymbol"
+-                ? relPath
+-                : `${relPath}:${args.line}:${args.character}`
+-          const title = detail ? `${args.operation} ${detail}` : args.operation
++          return yield* query(args).pipe(
++            Effect.provideService(LSP.Service, lsp),
++            Effect.provideService(FSUtil.Service, fs),
++          )
++        }).pipe(Effect.orDie),
++    }
++  }),
++)
+ 
+-          const exists = yield* fs.existsSafe(file)
+-          if (!exists) throw new Error(`File not found: ${file}`)
++// Shared by the native tool and mounted-workspace adapters. Permissions remain at the tool boundary.
++export const query = Effect.fn("LspTool.query")(function* (args: Schema.Schema.Type<typeof Parameters>) {
++  const lsp = yield* LSP.Service
++  const fs = yield* FSUtil.Service
++  const instance = yield* InstanceState.context
++  const file = path.resolve(instance.directory, args.filePath)
++  const uri = pathToFileURL(file).href
++  const position = { file, line: args.line - 1, character: args.character - 1 }
++  const relPath = path.relative(instance.worktree, file)
++  const detail =
++    args.operation === "workspaceSymbol"
++      ? ""
++      : args.operation === "documentSymbol"
++        ? relPath
++        : `${relPath}:${args.line}:${args.character}`
++  const title = detail ? `${args.operation} ${detail}` : args.operation
+ 
+-          const available = yield* lsp.hasClients(file)
+-          if (!available) throw new Error("No LSP server available for this file type.")
++  const exists = yield* fs.existsSafe(file)
++  if (!exists) throw new Error(`File not found: ${file}`)
+ 
+-          yield* lsp.touchFile(file, "document")
++  const available = yield* lsp.hasClients(file)
++  if (!available) throw new Error("No LSP server available for this file type.")
+ 
+-          const result: unknown[] = yield* (() => {
+-            switch (args.operation) {
+-              case "goToDefinition":
+-                return lsp.definition(position)
+-              case "findReferences":
+-                return lsp.references(position)
+-              case "hover":
+-                return lsp.hover(position)
+-              case "documentSymbol":
+-                return lsp.documentSymbol(uri)
+-              case "workspaceSymbol":
+-                return lsp.workspaceSymbol(args.query ?? "")
+-              case "goToImplementation":
+-                return lsp.implementation(position)
+-              case "prepareCallHierarchy":
+-                return lsp.prepareCallHierarchy(position)
+-              case "incomingCalls":
+-                return lsp.incomingCalls(position)
+-              case "outgoingCalls":
+-                return lsp.outgoingCalls(position)
+-            }
+-          })()
++  yield* lsp.touchFile(file, "document")
+ 
+-          return {
+-            title,
+-            metadata: { result },
+-            output: result.length === 0 ? `No results found for ${args.operation}` : JSON.stringify(result, null, 2),
+-          }
+-        }).pipe(Effect.orDie),
++  const result: unknown[] = yield* (() => {
++    switch (args.operation) {
++      case "goToDefinition":
++        return lsp.definition(position)
++      case "findReferences":
++        return lsp.references(position)
++      case "hover":
++        return lsp.hover(position)
++      case "documentSymbol":
++        return lsp.documentSymbol(uri)
++      case "workspaceSymbol":
++        return lsp.workspaceSymbol(args.query ?? "")
++      case "goToImplementation":
++        return lsp.implementation(position)
++      case "prepareCallHierarchy":
++        return lsp.prepareCallHierarchy(position)
++      case "incomingCalls":
++        return lsp.incomingCalls(position)
++      case "outgoingCalls":
++        return lsp.outgoingCalls(position)
+     }
+-  }),
+-)
++  })()
++
++  return {
++    title,
++    metadata: { result },
++    output: result.length === 0 ? `No results found for ${args.operation}` : JSON.stringify(result, null, 2),
++  }
++})
 diff --git a/packages/opencode/src/tool/registry.ts b/packages/opencode/src/tool/registry.ts
-index d8a912e..9d43f16 100644
+index d8a912e75..9d43f1604 100644
 --- a/packages/opencode/src/tool/registry.ts
 +++ b/packages/opencode/src/tool/registry.ts
 @@ -156,7 +156,18 @@ export const layer = Layer.effect(
@@ -391,8 +854,1195 @@ index d8a912e..9d43f16 100644
      })
  
      return Service.of({ ids, all, named, tools })
+diff --git a/packages/opencode/test/plugin/deltabox-language.test.ts b/packages/opencode/test/plugin/deltabox-language.test.ts
+new file mode 100644
+index 000000000..d7ec4c563
+--- /dev/null
++++ b/packages/opencode/test/plugin/deltabox-language.test.ts
+@@ -0,0 +1,185 @@
++import { expect } from "bun:test"
++import { Effect, Layer } from "effect"
++import path from "node:path"
++import { pathToFileURL } from "node:url"
++import { Config } from "@/config/config"
++import { InstanceState } from "@/effect/instance-state"
++import { createLanguage } from "@/plugin/deltabox/language"
++import { Runtime } from "@/plugin/deltabox/runtime"
++import { parseConfig } from "@/plugin/deltabox/config"
++import { makeTools } from "@/plugin/deltabox/tools"
++import { tmpdir } from "../fixture/fixture"
++import { testEffect } from "../lib/effect"
++
++const it = testEffect(Layer.mergeAll(Config.defaultLayer))
++
++it.instance("runs the existing formatter and LSP in the view and releases their caches", () =>
++  Effect.gen(function* () {
++    const instance = yield* InstanceState.context
++    const config = yield* (yield* Config.Service).get()
++    yield* Effect.promise(async () => {
++      await using mount = await tmpdir()
++      const file = path.join(instance.directory, "中文 space.mounted")
++      const mountedFile = path.join(mount.path, "中文 space.mounted")
++      const log = path.join(instance.directory, "lsp.log")
++      await Bun.write(file, "host content\n")
++      await Bun.write(mountedFile, "invalid private content")
++      const formatter = path.join(instance.directory, "formatter.mjs")
++      await Bun.write(
++        formatter,
++        `import { readFileSync, writeFileSync } from "node:fs"
++if (process.cwd() !== ${JSON.stringify(mount.path)}) throw new Error("wrong cwd")
++writeFileSync(process.argv[2], readFileSync(process.argv[2], "utf8").trim() + "\\n")`,
++      )
++      config.formatter = { mounted: { extensions: [".mounted"], command: [process.execPath, formatter, "$FILE"] } }
++      config.lsp = {
++        mounted: {
++          extensions: [".mounted"],
++          command: [process.execPath, path.join(import.meta.dir, "fixtures/mounted-lsp.mjs"), log],
++        },
++      }
++      const language = createLanguage(instance, config)
++      const view = { project: instance.directory, mountpoint: mount.path }
++      try {
++        const diagnostics = await language.afterWrite(view, file)
++        expect(await Bun.file(mountedFile).text()).toBe("invalid private content\n")
++        expect(await Bun.file(file).text()).toBe("host content\n")
++        expect(diagnostics).toContain("invalid private content")
++        expect(diagnostics).toContain(file)
++        expect(diagnostics).not.toContain(mount.path)
++        const initialized = JSON.parse((await Bun.file(log).text()).split("\n")[0])
++        expect(initialized.cwd).toBe(mount.path)
++        expect(initialized.rootUri).toBe(pathToFileURL(mount.path).href)
++        expect(initialized.workspaceFolders[0].uri).toBe(pathToFileURL(mount.path).href)
++
++        const args = { filePath: file, line: 1, character: 1 }
++        const definition = await language.query(view, { ...args, operation: "goToDefinition" })
++        expect(definition.metadata.result).toMatchObject([{ uri: pathToFileURL(file).href }])
++        expect(definition.output).not.toContain(pathToFileURL(mount.path).href)
++        const hover = await language.query(view, { ...args, operation: "hover" })
++        expect(hover.output).toContain("invalid private content")
++        await expect(
++          language.query(view, {
++            ...args,
++            filePath: path.join(instance.directory, "..", "outside.mounted"),
++            operation: "hover",
++          }),
++        ).rejects.toThrow("outside the language workspace")
++
++        await language.dispose(view)
++        expect(() => process.kill(initialized.pid, 0)).toThrow()
++        // A rollback or replacement at the same mount path must not reuse old documents.
++        await Bun.write(mountedFile, "restored private content\n")
++        const restored = await language.query(view, { ...args, operation: "hover" })
++        expect(restored.output).toContain("restored private content")
++        expect((await Bun.file(log).text()).split("\n").filter((line) => line.startsWith("{"))).toHaveLength(2)
++      } finally {
++        await language.dispose(view)
++      }
++    })
++  }),
++)
++
++it.instance("preserves disabled language settings without touching files", () =>
++  Effect.gen(function* () {
++    const instance = yield* InstanceState.context
++    const config = yield* (yield* Config.Service).get()
++    config.lsp = false
++    config.formatter = false
++    expect(createLanguage(instance, config).enabled).toBe(false)
++  }),
++)
++
++// Opt in on machines with the native filesystem provider installed.
++const native = process.env.DEVECO_TEST_DELTABOX_NATIVE === "1" ? it.instance : it.instance.skip
++native(
++  "formats plugin writes and patches inside Lite and preserves review/rollback",
++  () =>
++    Effect.gen(function* () {
++      const instance = yield* InstanceState.context
++      const config = yield* (yield* Config.Service).get()
++      yield* Effect.promise(async () => {
++        await using state = await tmpdir()
++        const file = path.join(instance.directory, "example.mounted")
++        const formatter = path.join(state.path, "formatter.mjs")
++        await Bun.write(file, "host content\n")
++        await Bun.write(
++          formatter,
++          `import { readFileSync, writeFileSync } from "node:fs"
++writeFileSync(process.argv[2], readFileSync(process.argv[2], "utf8").trim() + "\\n")`,
++        )
++        config.formatter = { mounted: { extensions: [".mounted"], command: [process.execPath, formatter, "$FILE"] } }
++        config.lsp = {
++          mounted: {
++            extensions: [".mounted"],
++            command: [
++              process.execPath,
++              path.join(import.meta.dir, "fixtures/mounted-lsp.mjs"),
++              path.join(state.path, "lsp.log"),
++            ],
++          },
++        }
++        const runtime = new Runtime(
++          instance.directory,
++          parseConfig({
++            stateDir: path.join(state.path, "state"),
++            runtimeDir: path.join(state.path, "runtime"),
++            filesystem: { mode: "cbcow-private", require: true },
++          }),
++          {
++            async parent() {
++              return undefined
++            },
++            async notify() {},
++          },
++          undefined,
++          createLanguage(instance, config),
++        )
++        const ctx = {
++          sessionID: "mounted-test",
++          messageID: "mounted-test",
++          agent: "test",
++          directory: instance.directory,
++          worktree: instance.worktree,
++          abort: new AbortController().signal,
++          metadata() {},
++          async ask() {},
++        }
++        const tools = makeTools(() => runtime)
++        try {
++          await tools.read.execute({ filePath: file }, ctx)
++          const written = await tools.write.execute({ filePath: file, content: "invalid private content   " }, ctx)
++          expect(written).toMatchObject({ output: expect.stringContaining("invalid private content") })
++          expect(written).toMatchObject({ metadata: { filediff: { after: "invalid private content\n" } } })
++          expect(await Bun.file(file).text()).toBe("host content\n")
++          expect(await runtime.command(ctx.sessionID, "sandbox-diff", "")).toContain("invalid private content")
++          const definition = await tools.lsp.execute(
++            { operation: "goToDefinition", filePath: file, line: 1, character: 1 },
++            ctx,
++          )
++          expect(definition).toMatchObject({ output: expect.stringContaining(pathToFileURL(instance.directory).href) })
++          await runtime.command(ctx.sessionID, "sandbox-abort", "")
++          const restored = await tools.lsp.execute({ operation: "hover", filePath: file, line: 1, character: 1 }, ctx)
++          expect(restored).toMatchObject({ output: expect.stringContaining("host content") })
++
++          await tools.read.execute({ filePath: file }, ctx)
++          const edited = await tools.edit.execute(
++            { filePath: file, oldString: "host content\n", newString: "edited   " },
++            ctx,
++          )
++          expect(edited).toMatchObject({ metadata: { filediff: { after: "edited\n" } } })
++          const patched = await tools.apply_patch.execute(
++            { patchText: "*** Begin Patch\n*** Add File: added.mounted\n+patched   \n*** End Patch" },
++            ctx,
++          )
++          expect(patched).toMatchObject({ metadata: { files: [{ patch: expect.stringContaining("+patched\n") }] } })
++          await runtime.command(ctx.sessionID, "sandbox-commit", "")
++          expect(await Bun.file(file).text()).toBe("edited\n")
++          expect(await Bun.file(path.join(instance.directory, "added.mounted")).text()).toBe("patched\n")
++        } finally {
++          await runtime.dispose()
++        }
++      })
++    }),
++  60000,
++)
+diff --git a/packages/opencode/test/plugin/deltabox-platform.test.ts b/packages/opencode/test/plugin/deltabox-platform.test.ts
+new file mode 100644
+index 000000000..eac389f4a
+--- /dev/null
++++ b/packages/opencode/test/plugin/deltabox-platform.test.ts
+@@ -0,0 +1,94 @@
++// SPDX-License-Identifier: Apache-2.0
++// File helper coverage adapted from deveco-deltabox e7a3e09 tests/windows.test.mjs.
++import { describe, expect, test } from "bun:test"
++import { spawnSync } from "node:child_process"
++import fs from "node:fs/promises"
++import path from "node:path"
++import { Shell } from "@opencode-ai/core/shell"
++import { which } from "@opencode-ai/core/util/which"
++import { loadConfig } from "../../src/plugin/deltabox/config"
++import { windowsArgv } from "../../src/plugin/deltabox/windows"
++import { tmpdir } from "../fixture/fixture"
++
++describe("Deltabox platform configuration", () => {
++  test("loads an explicit user config and preserves project precedence", async () => {
++    await using tmp = await tmpdir()
++    const project = path.join(tmp.path, "project")
++    await fs.mkdir(project)
++    const config = path.join(tmp.path, "user.json")
++    await Bun.write(
++      config,
++      JSON.stringify({ review: { mode: "tool" }, transport: "serve", bin: String.raw`tools\deltabox.exe` }),
++    )
++    await Bun.write(path.join(project, "deltabox.json"), JSON.stringify({ review: { mode: "risky" } }))
++    const previous = process.env.DEVECO_DELTABOX_CONFIG
++    process.env.DEVECO_DELTABOX_CONFIG = config
++    try {
++      expect(loadConfig(project)).toMatchObject({
++        review: { mode: "risky" },
++        transport: "serve",
++        bin: path.resolve(project, String.raw`tools\deltabox.exe`),
++      })
++      expect(loadConfig(project, path.join(tmp.path, "missing.json")).transport).toBe("native")
++      await Bun.write(config, "invalid config")
++      expect(() => loadConfig(project)).toThrow()
++    } finally {
++      if (previous === undefined) delete process.env.DEVECO_DELTABOX_CONFIG
++      else process.env.DEVECO_DELTABOX_CONFIG = previous
++    }
++  })
++
++  test("Windows file helpers preserve literal paths and include directories in find", async () => {
++    await using tmp = await tmpdir()
++    const run = (argv: string[]) => {
++      const [command, ...args] = windowsArgv(argv, tmp.path)
++      const result = spawnSync(command, args, { cwd: tmp.path, encoding: "utf8", timeout: 15000 })
++      if (result.error) throw result.error
++      return result
++    }
++    const file = path.join(tmp.path, "中文 ' $; notes.txt")
++    await Bun.write(file, "original")
++    await fs.mkdir(path.join(tmp.path, "nested"))
++    expect(run(["test", "-e", file]).status).toBe(0)
++    expect(run(["test", "-d", file]).status).toBe(1)
++    expect(run(["test", "-d", path.join(tmp.path, "nested")]).status).toBe(0)
++    expect(run(["sh", "-c", 'test ! -e "$1" && test ! -L "$1"', "deltabox-patch", file]).status).toBe(1)
++    expect(run(["ls", "-1A", "--", tmp.path]).stdout).toContain("中文 ' $; notes.txt")
++    const found = run(["find", tmp.path, "-name", "nested"])
++    expect(found.status).toBe(0)
++    expect(found.stdout).toContain(path.join(tmp.path, "nested"))
++    expect(run(["rm", "--", file]).status).toBe(0)
++    expect(run(["test", "-e", file]).status).toBe(1)
++    expect(run(["sh", "-c", 'test ! -e "$1" && test ! -L "$1"', "deltabox-patch", file]).status).toBe(0)
++  })
++
++  test.skipIf(process.platform !== "win32")(
++    "uses DevEco shell selection and runs literal commands in PowerShell 5.1 and 7",
++    async () => {
++      await using tmp = await tmpdir()
++      const shells = [which("powershell.exe"), which("pwsh.exe")].filter((shell): shell is string => Boolean(shell))
++      expect(shells.length).toBeGreaterThan(0)
++      for (const shell of shells) {
++        const file = path.join(tmp.path, "中文 ' $; notes.txt")
++        const command =
++          "[IO.File]::WriteAllText('" + file.replaceAll("'", "''") + "', 'literal $() 中文'); Write-Output '成功'"
++        const argv = windowsArgv(["bash", "-c", command], tmp.path, shell)
++        expect(argv[0]).toBe(Shell.preferred(shell))
++        expect(argv.at(-2)).toBe("-EncodedCommand")
++        expect(Buffer.from(argv.at(-1)!, "base64").toString("utf16le").endsWith(command)).toBe(true)
++        const result = spawnSync(argv[0], argv.slice(1), { cwd: tmp.path, encoding: "utf8", timeout: 15000 })
++        expect(result.error).toBeUndefined()
++        expect(result.status).toBe(0)
++        expect(result.stdout).toContain("成功")
++        expect(await Bun.file(file).text()).toBe("literal $() 中文")
++      }
++      const command = "echo configured-shell"
++      const shell = Shell.preferred("cmd.exe")
++      expect(windowsArgv(["bash", "-c", command], tmp.path, shell)).toEqual([
++        shell,
++        ...Shell.args(shell, command, tmp.path),
++      ])
++      expect(windowsArgv(["custom.exe", "literal $() ' 中文"], tmp.path)).toEqual(["custom.exe", "literal $() ' 中文"])
++    },
++  )
++})
+diff --git a/packages/opencode/test/plugin/deltabox-review.test.ts b/packages/opencode/test/plugin/deltabox-review.test.ts
+new file mode 100644
+index 000000000..db41e667b
+--- /dev/null
++++ b/packages/opencode/test/plugin/deltabox-review.test.ts
+@@ -0,0 +1,141 @@
++import { expect, test } from "bun:test"
++import { ReviewGate, pendingReview } from "../../src/plugin/deltabox/review"
++import type { Client } from "../../src/plugin/deltabox/client"
++import { Runtime } from "../../src/plugin/deltabox/runtime"
++import { parseConfig } from "../../src/plugin/deltabox/config"
++import { tmpdir } from "../fixture/fixture"
++
++test("confirmation switches per root session without acquiring a project lease", async () => {
++  await using tmp = await tmpdir()
++  const runtime = new Runtime(
++    tmp.path,
++    parseConfig({}),
++    {
++      async parent(id) {
++        return id === "child" ? "parent" : undefined
++      },
++      async notify() {},
++    },
++    () => {
++      throw new Error("Confirmation must not start a sandbox")
++    },
++  )
++  try {
++    expect(await runtime.command("parent", "sandbox-confirmation", "")).toBe("Confirmation: command.")
++    expect(await runtime.command("parent", "sandbox-confirmation", "dialog")).toContain("Confirmation: dialog.")
++    expect(await runtime.command("child", "sandbox-confirmation", "")).toBe("Confirmation: dialog.")
++    expect(await runtime.command("other", "sandbox-confirmation", "")).toBe("Confirmation: command.")
++    await runtime.idle("parent")
++    expect(await runtime.command("parent", "sandbox-confirmation", "")).toBe("Confirmation: dialog.")
++    await expect(runtime.command("parent", "sandbox-confirmation", "invalid")).rejects.toThrow("Usage:")
++    await expect(runtime.command("parent", "sandbox-confirmation", "command dialog")).rejects.toThrow("Usage:")
++    expect(await runtime.command("parent", "sandbox-confirmation", "")).toBe("Confirmation: dialog.")
++    await runtime.command("child", "sandbox-confirmation", "command")
++    expect(await runtime.command("parent", "sandbox-confirmation", "")).toBe("Confirmation: command.")
++  } finally {
++    await runtime.dispose()
++  }
++})
++
++for (const mode of ["task", "tool", "risky"] as const) {
++  test(`${mode} reports pending changes repeatedly without accepting them`, async () => {
++    const calls: string[] = []
++    const client = {
++      async active() {
++        return { checkpoint_id: "original", kind: mode, label: null, started_at_ms: 0 }
++      },
++      async review() {
++        return {
++          from: "original",
++          to: null,
++          pending_changes: 1,
++          changes: [
++            {
++              path: "example.txt",
++              kind: "added",
++              old_size: null,
++              new_size: 4,
++              is_binary: false,
++              added_lines: 1,
++              removed_lines: 0,
++            },
++          ],
++        }
++      },
++      async commit() {
++        calls.push("commit")
++        return { checkpoint_id: "original", applied: 1 }
++      },
++    } satisfies Pick<Client, "active" | "review" | "commit">
++    const first = await pendingReview(client)
++    expect(first).toContain("example.txt")
++    expect(first).toContain("/sandbox-diff")
++    expect(first).toContain("/sandbox-commit")
++    expect(first).toContain("/sandbox-abort")
++    expect(await pendingReview(client)).toBe(first)
++    expect(calls).toEqual([])
++  })
++}
++
++test("an empty review is closed without asking for approval", async () => {
++  const calls: string[] = []
++  expect(
++    await pendingReview({
++      async active() {
++        return { checkpoint_id: "empty", kind: "task", label: null, started_at_ms: 0 }
++      },
++      async review() {
++        return { from: "empty", to: null, pending_changes: 0, changes: [] }
++      },
++      async commit() {
++        calls.push("commit")
++        return { checkpoint_id: "empty", applied: 0 }
++      },
++    }),
++  ).toBe("No pending changes.")
++  expect(calls).toEqual(["commit"])
++})
++
++for (const reply of ["once", "reject"] as const) {
++  test(`dialog confirmation ${reply} settles the pending review`, async () => {
++    const gate = new ReviewGate()
++    const calls: string[] = []
++    const result = await gate.review(
++      {
++        async active() {
++          return { checkpoint_id: "original", kind: "task", label: null, started_at_ms: 0 }
++        },
++        async review() {
++          return { from: "original", to: null, pending_changes: 1, changes: [] }
++        },
++        async commit() {
++          calls.push("commit")
++          return { checkpoint_id: "original", applied: 1 }
++        },
++        async abort() {
++          calls.push("abort")
++          return { checkpoint_id: "original", restored: 1 }
++        },
++      },
++      {
++        sessionID: "session",
++        messageID: "message",
++        agent: "build",
++        directory: ".",
++        worktree: ".",
++        abort: new AbortController().signal,
++        metadata() {},
++        async ask(input) {
++          expect(input.permission).toBe("deltabox_review")
++          expect(calls).toEqual([])
++          calls.push("ask")
++          gate.event({ type: "permission.asked", properties: { ...input, sessionID: "session", id: "request" } })
++          gate.event({ type: "permission.replied", properties: { sessionID: "session", requestID: "request", reply } })
++          if (reply === "reject") throw new Error("Rejected")
++        },
++      },
++    )
++    expect(calls).toEqual(["ask", reply === "once" ? "commit" : "abort"])
++    expect(result).toContain(reply === "once" ? "Accepted 1" : "Rolled back 1")
++  })
++}
+diff --git a/packages/opencode/test/plugin/deltabox-vendor.test.ts b/packages/opencode/test/plugin/deltabox-vendor.test.ts
+new file mode 100644
+index 000000000..0d7a0df74
+--- /dev/null
++++ b/packages/opencode/test/plugin/deltabox-vendor.test.ts
+@@ -0,0 +1,85 @@
++import { describe, expect, test } from "bun:test"
++import path from "node:path"
++import { bundleDeltabox } from "../../script/vendor-deltabox"
++import { tmpdir } from "../fixture/fixture"
++
++const version = "0.1.4"
++
++describe("Deltabox distribution", () => {
++  test("keeps unsupported distributions free of native binaries", async () => {
++    await using tmp = await tmpdir()
++    const vendorDir = path.join(tmp.path, "vendor")
++    await bundleDeltabox({
++      version,
++      cacheDir: path.join(tmp.path, "cache"),
++      vendorDir,
++      target: { os: "freebsd", arch: "x64" },
++      offline: true,
++    })
++    expect(await Bun.file(path.join(vendorDir, "LICENSE")).exists()).toBe(true)
++    expect(await Bun.file(path.join(vendorDir, "deltabox.node")).exists()).toBe(false)
++  })
++
++  test("rejects Windows architectures without a published runtime", async () => {
++    await using tmp = await tmpdir()
++    await expect(
++      bundleDeltabox({
++        version,
++        cacheDir: path.join(tmp.path, "cache"),
++        vendorDir: path.join(tmp.path, "vendor"),
++        target: { os: "win32", arch: "arm64" },
++        offline: true,
++      }),
++    ).rejects.toThrow("Unsupported Deltabox architecture")
++  })
++
++  for (const target of [
++    { os: "darwin", arch: "arm64" },
++    { os: "win32", arch: "x64" },
++  ]) {
++    test(`refuses an incomplete ${target.os} native cache during an offline build`, async () => {
++      await using tmp = await tmpdir()
++      await expect(
++        bundleDeltabox({
++          version,
++          cacheDir: path.join(tmp.path, "cache"),
++          vendorDir: path.join(tmp.path, "vendor"),
++          target,
++          offline: true,
++        }),
++      ).rejects.toThrow("Offline vendor cache miss")
++    })
++  }
++
++  for (const target of [
++    { os: "darwin", arch: "arm64", name: "deltabox-lite-darwin-arm64", binary: "deltabox" },
++    { os: "darwin", arch: "x64", name: "deltabox-lite-darwin-x64", binary: "deltabox" },
++    { os: "linux", arch: "arm64", name: "deltabox-lite-linux-arm64", binary: "deltabox" },
++    { os: "linux", arch: "x64", name: "deltabox-lite-linux-x64", binary: "deltabox" },
++    { os: "win32", arch: "x64", name: "deltabox-lite-windows-x64", binary: "deltabox.exe" },
++  ]) {
++    test(`copies ${target.os}/${target.arch} executable, addon and license into packable paths`, async () => {
++      await using tmp = await tmpdir()
++      const cacheDir = path.join(tmp.path, "cache")
++      const pkg = path.join(cacheDir, "deltabox", version, `${target.os}-${target.arch}`, "node_modules", target.name)
++      for (const [name, body] of Object.entries({
++        "package.json": JSON.stringify({ version }),
++        [`bin/${target.binary}`]: "executable fixture",
++        "native/deltabox.node": "addon fixture",
++        LICENSE: "license fixture",
++      })) {
++        await Bun.write(path.join(pkg, name), body)
++      }
++      const vendorDir = path.join(tmp.path, "vendor/deltabox")
++      await bundleDeltabox({ version, cacheDir, vendorDir, target, offline: true })
++      expect(await Bun.file(path.join(vendorDir, target.binary)).text()).toBe("executable fixture")
++      expect(await Bun.file(path.join(vendorDir, "deltabox.node")).text()).toBe("addon fixture")
++      expect(await Bun.file(path.join(vendorDir, "RUNTIME-LICENSE")).text()).toBe("license fixture")
++      expect(await Bun.file(path.join(vendorDir, "runtime.json")).json()).toEqual({
++        name: target.name,
++        version,
++        target: `${target.os}-${target.arch}`,
++      })
++    })
++  }
++})
+diff --git a/packages/opencode/test/plugin/deltabox.e2e.mjs b/packages/opencode/test/plugin/deltabox.e2e.mjs
+new file mode 100644
+index 000000000..d767213f5
+--- /dev/null
++++ b/packages/opencode/test/plugin/deltabox.e2e.mjs
+@@ -0,0 +1,172 @@
++// SPDX-License-Identifier: Apache-2.0
++// Adapted from delta-box/deveco-deltabox tests (c36d20e); uses the built-in adapter.
++import { test } from "node:test"
++import assert from "node:assert/strict"
++import { existsSync, readFileSync, mkdtempSync, mkdirSync, copyFileSync, constants, rmSync } from "node:fs"
++import { tmpdir } from "node:os"
++import { join } from "node:path"
++import { spawn } from "node:child_process"
++import { once } from "node:events"
++import { startHost } from "./fixtures/deltabox-host.mjs"
++
++test(
++  "built-in Deltabox finishes turns without approval and retains changes for manual commands",
++  { skip: !process.env.DEVECO_BIN, timeout: 180000 },
++  async () => {
++    const host = await startHost()
++    const { api, project } = host
++    try {
++      const session = await api("/session", { title: "Deltabox manual review" })
++      const command = (command, args = "") => api(`/session/${session.id}/command`, { command, arguments: args })
++      const prompt = (label) =>
++        api(`/session/${session.id}/message`, {
++          parts: [{ type: "text", text: `[case:${label}] Apply the requested local test change.` }],
++        })
++      for (const label of ["accept", "reject", "cancel"]) {
++        await prompt(label)
++        assert.deepEqual(await api("/permission"), [], "turn must finish without approval")
++        assert.equal(existsSync(join(project, `${label}.txt`)), false)
++        const count = host.requests()
++        assert.match((await command("sandbox-diff")).parts[0].text, new RegExp(`${label}.txt`))
++        await command("sandbox-skip")
++        assert.match((await command("sandbox-review")).parts[0].text, new RegExp(`${label}.txt`))
++        await command(label === "accept" ? "sandbox-commit" : "sandbox-abort")
++        assert.equal(existsSync(join(project, `${label}.txt`)), label === "accept")
++        if (label === "accept") {
++          assert.equal(readFileSync(join(project, "accept.txt"), "utf8"), "reviewed\n")
++          assert.equal(readFileSync(join(project, "patch.txt"), "utf8"), "patched\n")
++        }
++        assert.match((await command("sandbox-status")).parts[0].text, /pending changes: 0/)
++        assert.equal(host.requests(), count, "manual review must not call the model")
++      }
++      await prompt("subagent")
++      assert.deepEqual(await api("/permission"), [])
++      assert.equal(existsSync(join(project, "child.txt")), false)
++      assert.match((await command("sandbox-diff")).parts[0].text, /child.txt/)
++      await command("sandbox-commit")
++      assert.equal(readFileSync(join(project, "child.txt"), "utf8"), "child\n")
++      for (const mode of ["task", "tool", "risky"]) {
++        await command("sandbox-mode", mode)
++        await prompt(`mode-${mode}`)
++        assert.deepEqual(await api("/permission"), [])
++        assert.equal(existsSync(join(project, `mode-${mode}-first.txt`)), false)
++        assert.equal(existsSync(join(project, `mode-${mode}-second.txt`)), false)
++        assert.match((await command("sandbox-status")).parts[0].text, /pending changes: 2/)
++        await command("sandbox-abort")
++        assert.match((await command("sandbox-status")).parts[0].text, /pending changes: 0/)
++      }
++      const auto = spawn(
++        process.env.DEVECO_BIN,
++        [
++          "run",
++          "--attach",
++          host.url,
++          "--dir",
++          project,
++          "--session",
++          session.id,
++          "--auto",
++          "--format",
++          "json",
++          "[case:auto] Write the automatic approval test file.",
++        ],
++        { cwd: project, env: host.env, stdio: ["ignore", "pipe", "pipe"] },
++      )
++      let output = ""
++      auto.stdout.on("data", (data) => {
++        output += data
++      })
++      auto.stderr.on("data", (data) => {
++        output += data
++      })
++      const timer = setTimeout(() => auto.kill("SIGKILL"), 30000)
++      try {
++        const [code] = await once(auto, "close")
++        assert.equal(code, 0, output)
++        assert.equal(existsSync(join(project, "auto.txt")), false, "--auto must not accept sandbox changes")
++        assert.deepEqual(await api("/permission"), [])
++        assert.match((await command("sandbox-diff")).parts[0].text, /auto.txt/)
++        await command("sandbox-commit")
++        assert.equal(readFileSync(join(project, "auto.txt"), "utf8"), "auto\n")
++      } finally {
++        clearTimeout(timer)
++        auto.kill()
++      }
++    } finally {
++      await host.close()
++    }
++  },
++)
++
++test(
++  "built-in Deltabox stays disabled without explicit opt-in",
++  { skip: !process.env.DEVECO_BIN, timeout: 60000 },
++  async () => {
++    const host = await startHost({ enabled: false })
++    try {
++      const tools = await host.api("/experimental/tool/ids")
++      assert.ok(!tools.includes("sandbox_review"))
++      const commands = await host.api("/command")
++      assert.ok(!commands.some((command) => command.name === "sandbox-status"))
++      const session = await host.api("/session", { title: "Default host behavior" })
++      await host.api(`/session/${session.id}/message`, {
++        parts: [{ type: "text", text: "[case:ordinary] Write ordinary.txt." }],
++      })
++      assert.equal(readFileSync(join(host.project, "ordinary.txt"), "utf8"), "ordinary\n")
++      assert.deepEqual(await host.api("/permission"), [])
++    } finally {
++      await host.close()
++    }
++  },
++)
++
++for (const transport of ["serve", "cli"]) {
++  test(
++    `bundled ${transport} transport executes without a global deltabox command`,
++    { skip: !process.env.DEVECO_BIN, timeout: 60000 },
++    async () => {
++      const host = await startHost({ transport })
++      try {
++        const session = await host.api("/session", { title: `${transport} runtime` })
++        await host.api(`/session/${session.id}/message`, {
++          parts: [{ type: "text", text: `[case:transport-${transport}] Write a file.` }],
++        })
++        assert.deepEqual(await host.api("/permission"), [])
++        assert.equal(existsSync(join(host.project, `transport-${transport}.txt`)), false)
++        await host.api(`/session/${session.id}/command`, { command: "sandbox-commit", arguments: "" })
++        assert.equal(readFileSync(join(host.project, `transport-${transport}.txt`), "utf8"), `transport-${transport}\n`)
++      } finally {
++        await host.close()
++      }
++    },
++  )
++}
++
++test(
++  "missing packaged runtime fails closed without falling back to host writes",
++  { skip: !process.env.DEVECO_BIN, timeout: 60000 },
++  async () => {
++    const root = mkdtempSync(join(tmpdir(), "deveco-missing-deltabox-"))
++    mkdirSync(join(root, "bin"))
++    const binary = join(root, "bin", process.platform === "win32" ? "deveco.exe" : "deveco")
++    copyFileSync(process.env.DEVECO_BIN, binary, constants.COPYFILE_FICLONE)
++    let host
++    try {
++      host = await startHost({ binary })
++      const session = await host.api("/session", { title: "Missing native runtime" })
++      await host.api(`/session/${session.id}/message`, {
++        parts: [{ type: "text", text: "[case:missing] Write missing.txt." }],
++      })
++      assert.equal(existsSync(join(host.project, "missing.txt")), false)
++      const messages = await host.api(`/session/${session.id}/message`)
++      const tools = messages.flatMap((message) => message.parts).filter((part) => part.type === "tool")
++      assert.ok(
++        tools.some((part) => part.state.status === "error" && /deltabox\.node/.test(part.state.error)),
++        JSON.stringify(tools),
++      )
++    } finally {
++      await host?.close()
++      rmSync(root, { recursive: true, force: true })
++    }
++  },
++)
+diff --git a/packages/opencode/test/plugin/deltabox.test.ts b/packages/opencode/test/plugin/deltabox.test.ts
+new file mode 100644
+index 000000000..eff55a6a4
+--- /dev/null
++++ b/packages/opencode/test/plugin/deltabox.test.ts
+@@ -0,0 +1,159 @@
++import { afterEach, describe, expect } from "bun:test"
++import path from "node:path"
++import { Effect, Exit } from "effect"
++import { LayerNode } from "@opencode-ai/core/effect/layer-node"
++import { Config } from "@/config/config"
++import { Plugin } from "@/plugin"
++import { RuntimeFlags } from "@/effect/runtime-flags"
++import { ToolRegistry } from "@/tool/registry"
++import { TestInstance, disposeAllInstances } from "../fixture/fixture"
++import { testEffect } from "../lib/effect"
++
++const it = testEffect(
++  LayerNode.buildLayer(LayerNode.group([Plugin.node, ToolRegistry.node, Config.node]), {
++    replacements: [LayerNode.replace(RuntimeFlags.node, RuntimeFlags.layer({ disableDefaultPlugins: true }))],
++  }),
++)
++
++afterEach(disposeAllInstances)
++
++describe("built-in Deltabox", () => {
++  for (const deltabox of [undefined, false]) {
++    it.instance(
++      `keeps ordinary host tools and settings when deltabox is ${deltabox}`,
++      () =>
++        Effect.gen(function* () {
++          const plugins = yield* (yield* Plugin.Service).list()
++          expect(plugins.some((plugin) => plugin.tool?.sandbox_review)).toBe(false)
++          const config = yield* (yield* Config.Service).get()
++          expect(config.lsp).not.toBe(false)
++          expect(config.snapshot).not.toBe(false)
++          expect(config.command?.["sandbox-status"]).toBeUndefined()
++          expect((yield* (yield* ToolRegistry.Service).all()).some((tool) => tool.id === "sandbox_review")).toBe(false)
++        }),
++      { config: { deltabox } },
++    )
++  }
++
++  it.instance(
++    "loads from configuration without an external plugin or npm install",
++    () =>
++      Effect.gen(function* () {
++        const plugins = yield* (yield* Plugin.Service).list()
++        expect(plugins.filter((plugin) => plugin.tool?.sandbox_review)).toHaveLength(1)
++        expect(plugins.at(-1)?.tool?.shell).toBeDefined()
++        expect(plugins.at(-1)?.["session.turn.stopping"]).toBeDefined()
++        const config = yield* (yield* Config.Service).get()
++        expect(config.plugin ?? []).toEqual([])
++        expect(config.lsp).toBe(true)
++        expect(config.formatter).toBe(true)
++        expect(config.snapshot).toBe(false)
++        expect(config.command?.["sandbox-status"]).toBeDefined()
++        expect(config.permission?.deltabox_review).toBe("ask")
++        expect(config.command?.["sandbox-confirmation"]).toBeDefined()
++        const all = yield* (yield* ToolRegistry.Service).all()
++        for (const id of ["read", "write", "edit", "apply_patch", "shell", "lsp"]) {
++          expect(all.filter((tool) => tool.id === id)).toHaveLength(1)
++          expect(all.find((tool) => tool.id === id)?.source).toBe("custom")
++        }
++      }),
++    { config: { deltabox: true, lsp: true, formatter: true } },
++  )
++
++  it.instance(
++    "fails closed when the enabled sandbox configuration is invalid",
++    () =>
++      Effect.gen(function* () {
++        const test = yield* TestInstance
++        yield* Effect.promise(() => Bun.write(path.join(test.directory, "deltabox.json"), "invalid json"))
++        const plugin = yield* Plugin.Service
++        const result = yield* plugin
++          .trigger(
++            "tool.execute.before",
++            {
++              tool: "write",
++              sessionID: "test",
++              callID: "test",
++            },
++            { args: { filePath: "never-written.txt", content: "no" } },
++          )
++          .pipe(Effect.exit)
++        expect(Exit.isFailure(result)).toBe(true)
++        expect(yield* Effect.promise(() => Bun.file(path.join(test.directory, "never-written.txt")).exists())).toBe(
++          false,
++        )
++      }),
++    { config: { deltabox: true } },
++  )
++
++  it.instance(
++    "allows MCP tools without initializing the sandbox, including with invalid sandbox configuration",
++    () =>
++      Effect.gen(function* () {
++        const instance = yield* TestInstance
++        yield* Effect.promise(() => Bun.write(path.join(instance.directory, "deltabox.json"), "invalid json"))
++        const plugin = yield* Plugin.Service
++        // The same tool name remains blocked unless the host identifies its MCP origin.
++        yield* plugin.trigger(
++          "tool.execute.before",
++          { tool: "external_write", sessionID: "test", callID: "mcp", source: "mcp" },
++          { args: {} },
++        )
++        const result = yield* plugin
++          .trigger(
++            "tool.execute.before",
++            { tool: "external_write", sessionID: "test", callID: "custom", source: "custom" },
++            { args: {} },
++          )
++          .pipe(Effect.exit)
++        expect(Exit.isFailure(result)).toBe(true)
++      }),
++    { config: { deltabox: true } },
++  )
++
++  it.instance(
++    "continues blocking unadapted host tools while allowing MCP tools",
++    () =>
++      Effect.gen(function* () {
++        const plugin = yield* Plugin.Service
++        for (const source of [undefined, "builtin", "custom"] as const) {
++          const result = yield* plugin
++            .trigger(
++              "tool.execute.before",
++              { tool: "external_write", sessionID: "test", callID: "host", source },
++              { args: {} },
++            )
++            .pipe(Effect.exit)
++          expect(Exit.isFailure(result)).toBe(true)
++          expect(String(result)).toContain("no Deltabox adapter")
++        }
++        yield* plugin.trigger(
++          "tool.execute.before",
++          { tool: "external_write", sessionID: "test", callID: "mcp", source: "mcp" },
++          { args: {} },
++        )
++      }),
++    { config: { deltabox: true } },
++  )
++
++  it.instance(
++    "rejects duplicate external Deltabox registration",
++    () =>
++      Effect.gen(function* () {
++        const result = yield* (yield* Plugin.Service).list().pipe(Effect.exit)
++        expect(Exit.isFailure(result)).toBe(true)
++        expect(String(result)).toContain("Remove the external Deltabox plugin")
++      }),
++    {
++      init: (directory) =>
++        Effect.promise(async () => {
++          const plugin = path.join(directory, "external.mjs")
++          await Bun.write(
++            plugin,
++            'export default () => ({tool: {sandbox_review: {args: {}, execute: async () => ""}}})',
++          )
++          await Bun.write(path.join(directory, "deveco.json"), JSON.stringify({ deltabox: true, plugin: [plugin] }))
++        }),
++    },
++  )
++})
+diff --git a/packages/opencode/test/plugin/fixtures/deltabox-host.mjs b/packages/opencode/test/plugin/fixtures/deltabox-host.mjs
+new file mode 100644
+index 000000000..46440fbfc
+--- /dev/null
++++ b/packages/opencode/test/plugin/fixtures/deltabox-host.mjs
+@@ -0,0 +1,240 @@
++// SPDX-License-Identifier: Apache-2.0
++// Adapted from delta-box/deveco-deltabox tests (e7a3e09); uses the built-in adapter.
++import assert from "node:assert/strict"
++import { createServer } from "node:http"
++import { spawn } from "node:child_process"
++import { once } from "node:events"
++import { mkdtempSync, mkdirSync, writeFileSync, realpathSync } from "node:fs"
++import { join } from "node:path"
++import { tmpdir } from "node:os"
++import { pathToFileURL } from "node:url"
++import { rm } from "node:fs/promises"
++import { setTimeout as delay } from "node:timers/promises"
++
++export async function until(read, accept = Boolean, timeout = 30000) {
++  const deadline = Date.now() + timeout
++  let value
++  while (Date.now() < deadline) {
++    value = await read()
++    if (accept(value)) return value
++    await delay(40)
++  }
++  throw new Error(`Condition timed out: ${JSON.stringify(value)}`)
++}
++
++// A deterministic local model exercises the real provider, prompt loop, tool
++// registry and permission service. No model account or external API is used.
++export async function startHost(options = {}) {
++  const root = mkdtempSync(join(realpathSync(tmpdir()), "deltabox-deveco-e2e-"))
++  const project = join(root, "project")
++  mkdirSync(project)
++  let requests = 0
++  const steps = new Map()
++  const model = createServer(async (req, res) => {
++    try {
++      let raw = ""
++      for await (const chunk of req) raw += chunk
++      const body = JSON.parse(raw)
++      requests++
++      const user = [...body.messages].reverse().find((m) => m.role === "user")
++      const label = /\[case:([\w-]+)\]/.exec(JSON.stringify(user?.content))?.[1]
++      let call
++      if (label && body.tools?.length) {
++        const step = steps.get(label) ?? 0
++        steps.set(label, step + 1)
++        const plan = label.startsWith("mode-")
++          ? [
++              ["write", { filePath: `${label}-first.txt`, content: "first\n" }],
++              ["read", { filePath: `${label}-first.txt` }],
++              [
++                "shell",
++                {
++                  command: process.platform === "win32" ? "Write-Output ok" : ":",
++                  description: "Read-only command produces no changes",
++                },
++              ],
++              ["write", { filePath: `${label}-second.txt`, content: "second\n" }],
++            ]
++          : label === "subagent"
++            ? [
++                [
++                  "task",
++                  {
++                    description: "Exercise a foreground child agent",
++                    prompt: "[case:child] Write child.txt for the Deltabox test.",
++                    subagent_type: "general",
++                  },
++                ],
++              ]
++            : label === "accept"
++              ? [
++                  ["write", { filePath: "accept.txt", content: "draft\n" }],
++                  ["edit", { filePath: "accept.txt", oldString: "draft", newString: "reviewed" }],
++                  ["apply_patch", { patchText: "*** Begin Patch\n*** Add File: patch.txt\n+patched\n*** End Patch" }],
++                  [
++                    "shell",
++                    {
++                      command:
++                        (process.platform === "win32"
++                          ? "Set-Content -LiteralPath environment.txt -Value $env:DELTABOX_E2E_ENV -NoNewline"
++                          : "printf '%s' \"$DELTABOX_E2E_ENV\" > environment.txt") +
++                        (process.env.DEVECO_CLI_BIN
++                          ? process.platform === "win32"
++                            ? `; & '${process.env.DEVECO_CLI_BIN.replaceAll("'", "''")}' --version`
++                            : `; '${process.env.DEVECO_CLI_BIN.replaceAll("'", "'\\''")}' --version`
++                          : ""),
++                      description: "Check toolchain environment through Deltabox",
++                    },
++                  ],
++                ]
++              : [["write", { filePath: `${label}.txt`, content: `${label}\n` }]]
++        call = plan[step]
++      }
++      const delta = call
++        ? {
++            role: "assistant",
++            tool_calls: [
++              {
++                index: 0,
++                id: `call_${requests}`,
++                type: "function",
++                function: { name: call[0], arguments: JSON.stringify(call[1]) },
++              },
++            ],
++          }
++        : { role: "assistant", content: "Local model finished." }
++      res.writeHead(200, { "Content-Type": "text/event-stream" })
++      const chunk = (delta, finish_reason = null) =>
++        `data: ${JSON.stringify({ id: `chat_${requests}`, object: "chat.completion.chunk", created: 1, model: "test", choices: [{ index: 0, delta, finish_reason }] })}\n\n`
++      res.end(chunk(delta) + chunk({}, call ? "tool_calls" : "stop") + "data: [DONE]\n\n")
++    } catch (error) {
++      res.writeHead(500)
++      res.end(String(error))
++    }
++  })
++  model.listen(0, "127.0.0.1")
++  await once(model, "listening")
++  const fixture = join(root, "environment.mjs")
++  writeFileSync(
++    fixture,
++    `export default async () => ({ "shell.env": async (_input, output) => { output.env.DELTABOX_E2E_ENV = ${JSON.stringify("literal $() ' \" value")}; } });\n`,
++  )
++  writeFileSync(
++    join(project, "deveco.json"),
++    JSON.stringify({
++      deltabox: options.enabled ?? true,
++      plugin: [pathToFileURL(fixture).href],
++      permission: "allow",
++      model: "adapter-test/test",
++      small_model: "adapter-test/test",
++      provider: {
++        "adapter-test": {
++          npm: "@ai-sdk/openai-compatible",
++          name: "Local adapter test",
++          options: { baseURL: `http://127.0.0.1:${model.address().port}/v1`, apiKey: "unused" },
++          models: { test: { name: "Local test", tool_call: true, limit: { context: 128000, output: 8192 } } },
++        },
++      },
++    }),
++  )
++  writeFileSync(
++    join(project, "deltabox.json"),
++    JSON.stringify({
++      transport: options.transport ?? "native",
++      stateDir: join(root, "backend-state"),
++      runtimeDir: join(root, "backend-runtime"),
++      ...(process.env.DELTABOX_TEST_POLICY ? { policy: process.env.DELTABOX_TEST_POLICY } : {}),
++      filesystem: { mode: process.platform === "win32" ? "cbcow-private" : "copy-private", require: true },
++    }),
++  )
++  const env = Object.fromEntries(
++    [
++      "PATH",
++      "HOME",
++      "TMPDIR",
++      "SHELL",
++      "LANG",
++      "SystemRoot",
++      "WINDIR",
++      "SystemDrive",
++      "LOCALAPPDATA",
++      "APPDATA",
++      "USERPROFILE",
++      "TEMP",
++      "TMP",
++    ]
++      .filter((key) => process.env[key])
++      .map((key) => [key, process.env[key]]),
++  )
++  for (const [key, folder] of Object.entries({
++    XDG_CONFIG_HOME: "config",
++    XDG_DATA_HOME: "data",
++    XDG_CACHE_HOME: "cache",
++    XDG_STATE_HOME: "state",
++    DEVECO_TEST_HOME: "home",
++  })) {
++    env[key] = join(root, folder)
++    mkdirSync(env[key], { recursive: true })
++  }
++  for (const key of [
++    "DEVECO_DISABLE_DEFAULT_PLUGINS",
++    "DEVECO_DISABLE_DEFAULT_SKILLS",
++    "DEVECO_DISABLE_EXTERNAL_SKILLS",
++    "DEVECO_DISABLE_CLAUDE_CODE",
++    "DEVECO_DISABLE_MODELS_FETCH",
++    "DEVECO_DISABLE_AUTOUPDATE",
++    "DEVECO_DISABLE_CREDENTIAL_KEYCHAIN",
++  ])
++    env[key] = "true"
++  const child = spawn(options.binary ?? process.env.DEVECO_BIN, ["serve", "--hostname", "127.0.0.1", "--port", "0"], {
++    cwd: project,
++    env,
++    stdio: ["ignore", "pipe", "pipe"],
++  })
++  let log = ""
++  child.stdout.on("data", (data) => {
++    log += data
++  })
++  child.stderr.on("data", (data) => {
++    log += data
++  })
++  const close = async () => {
++    if (url && child.exitCode === null) {
++      await fetch(`${url}/instance/dispose`, {
++        method: "POST",
++        headers: { "x-deveco-directory": project },
++        signal: AbortSignal.timeout(10000),
++      }).catch(() => {})
++    }
++    child.kill("SIGTERM")
++    if (child.exitCode === null)
++      await Promise.race([once(child, "exit"), delay(3000).then(() => child.kill("SIGKILL"))])
++    model.closeAllConnections()
++    model.close()
++    if (!process.env.DEVECO_E2E_KEEP) await rm(root, { recursive: true, force: true, maxRetries: 10, retryDelay: 100 })
++    else writeFileSync(join(root, "host.log"), log)
++  }
++  let url
++  try {
++    url = await until(() => {
++      if (child.exitCode !== null || child.signalCode !== null)
++        throw new Error(`Host exited (${child.exitCode ?? child.signalCode}).\n${log}`)
++      return /listening on (http:\/\/[^\s]+)/.exec(log)?.[1]
++    })
++  } catch (error) {
++    await close()
++    throw error
++  }
++  const api = async (path, body, method = body === undefined ? "GET" : "POST") => {
++    const response = await fetch(`${url}${path}`, {
++      method,
++      headers: { "content-type": "application/json", "x-deveco-directory": project },
++      ...(body === undefined ? {} : { body: JSON.stringify(body) }),
++      signal: AbortSignal.timeout(60000),
++    })
++    const text = await response.text()
++    assert.ok(response.ok, `${path}: ${response.status} ${text}\n${log.slice(-3000)}`)
++    return text ? JSON.parse(text) : undefined
++  }
++  return { root, project, url, env, api, close, requests: () => requests, log: () => log }
++}
+diff --git a/packages/opencode/test/plugin/fixtures/mounted-lsp.mjs b/packages/opencode/test/plugin/fixtures/mounted-lsp.mjs
+new file mode 100644
+index 000000000..8d4dd8976
+--- /dev/null
++++ b/packages/opencode/test/plugin/fixtures/mounted-lsp.mjs
+@@ -0,0 +1,63 @@
++import { appendFileSync, readFileSync } from "node:fs"
++import { fileURLToPath } from "node:url"
++
++let buffer = Buffer.alloc(0)
++function send(message) {
++  const text = JSON.stringify({ jsonrpc: "2.0", ...message })
++  process.stdout.write(`Content-Length: ${Buffer.byteLength(text)}\r\n\r\n${text}`)
++}
++
++function handle(message) {
++  const reply = (result) => send({ id: message.id, result })
++  if (message.method === "initialize") {
++    appendFileSync(process.argv[2], JSON.stringify({ pid: process.pid, cwd: process.cwd(), ...message.params }) + "\n")
++    return reply({ capabilities: { textDocumentSync: 1, definitionProvider: true, hoverProvider: true } })
++  }
++  if (message.method === "textDocument/didOpen" || message.method === "textDocument/didChange") {
++    const uri = message.params.textDocument.uri
++    const text = readFileSync(fileURLToPath(uri), "utf8")
++    return send({
++      method: "textDocument/publishDiagnostics",
++      params: {
++        uri,
++        diagnostics: text.includes("invalid")
++          ? [
++              {
++                range: { start: { line: 0, character: 0 }, end: { line: 0, character: 1 } },
++                severity: 1,
++                message: text.trim(),
++              },
++            ]
++          : [],
++      },
++    })
++  }
++  if (message.method === "textDocument/definition")
++    return reply([
++      {
++        uri: message.params.textDocument.uri,
++        range: { start: { line: 0, character: 0 }, end: { line: 0, character: 1 } },
++      },
++    ])
++  if (message.method === "textDocument/hover")
++    return reply({ contents: readFileSync(fileURLToPath(message.params.textDocument.uri), "utf8") })
++  if (message.method === "shutdown") {
++    appendFileSync(process.argv[2], "shutdown\n")
++    return reply(null)
++  }
++  if (message.method === "exit") return process.exit(0)
++  if (message.id !== undefined) reply(null)
++}
++
++process.stdin.on("data", (chunk) => {
++  buffer = Buffer.concat([buffer, chunk])
++  while (true) {
++    const end = buffer.indexOf("\r\n\r\n")
++    if (end < 0) return
++    const size = Number(/Content-Length:\s*(\d+)/i.exec(buffer.subarray(0, end).toString())[1])
++    if (buffer.length < end + 4 + size) return
++    const message = JSON.parse(buffer.subarray(end + 4, end + 4 + size).toString())
++    buffer = buffer.subarray(end + 4 + size)
++    handle(message)
++  }
++})
 diff --git a/packages/opencode/test/tool/registry.test.ts b/packages/opencode/test/tool/registry.test.ts
-index 6e033ff..f0598e5 100644
+index 6e033ff6c..f0598e501 100644
 --- a/packages/opencode/test/tool/registry.test.ts
 +++ b/packages/opencode/test/tool/registry.test.ts
 @@ -87,6 +87,38 @@ afterEach(async () => {
@@ -435,7 +2085,7 @@ index 6e033ff..f0598e5 100644
      Effect.gen(function* () {
        const registry = yield* ToolRegistry.Service
 diff --git a/packages/plugin/src/index.ts b/packages/plugin/src/index.ts
-index 457b5ed..29372a9 100644
+index 457b5ed4c..b471b52bf 100644
 --- a/packages/plugin/src/index.ts
 +++ b/packages/plugin/src/index.ts
 @@ -63,6 +63,7 @@ export type PluginInput = {
@@ -456,7 +2106,7 @@ index 457b5ed..29372a9 100644
    tool?: {
      [key: string]: ToolDefinition
    }
-@@ -264,7 +268,7 @@ export interface Hooks {
+@@ -264,10 +268,10 @@ export interface Hooks {
    "permission.ask"?: (input: Permission, output: { status: "ask" | "deny" | "allow" }) => Promise<void>
    "command.execute.before"?: (
      input: { command: string; sessionID: string; arguments: string },
@@ -464,9 +2114,13 @@ index 457b5ed..29372a9 100644
 +    output: { parts: Part[]; result?: { text: string } },
    ) => Promise<void>
    "tool.execute.before"?: (
-     input: { tool: string; sessionID: string; callID: string },
+-    input: { tool: string; sessionID: string; callID: string },
++    input: { tool: string; sessionID: string; callID: string; source?: "builtin" | "custom" | "mcp" },
+     output: { args: any },
+   ) => Promise<void>
+   "shell.env"?: (
 diff --git a/packages/plugin/src/tool.ts b/packages/plugin/src/tool.ts
-index f242250..f47a95b 100644
+index f24225074..f47a95bf1 100644
 --- a/packages/plugin/src/tool.ts
 +++ b/packages/plugin/src/tool.ts
 @@ -17,6 +17,8 @@ export type ToolContext = {
@@ -478,8 +2132,20 @@ index f242250..f47a95b 100644
  }
  
  type AskInput = {
+diff --git a/packages/sdk/js/src/v2/gen/types.gen.ts b/packages/sdk/js/src/v2/gen/types.gen.ts
+index 12aed46ed..c71f63734 100644
+--- a/packages/sdk/js/src/v2/gen/types.gen.ts
++++ b/packages/sdk/js/src/v2/gen/types.gen.ts
+@@ -2056,6 +2056,7 @@ export type Config = {
+         },
+       ]
+   >
++  deltabox?: boolean
+   share?: "manual" | "auto" | "disabled"
+   autoshare?: boolean
+   /**
 diff --git a/packages/tui/src/i18n/en.json b/packages/tui/src/i18n/en.json
-index b116212..7ec0cfe 100644
+index b116212d9..7ec0cfe43 100644
 --- a/packages/tui/src/i18n/en.json
 +++ b/packages/tui/src/i18n/en.json
 @@ -622,6 +622,24 @@
@@ -508,7 +2174,7 @@ index b116212..7ec0cfe 100644
      "allow_until_restart": "This will allow {{action}} until DevEco Code is restarted.",
      "allow_patterns_until_restart": "This will allow the following patterns until DevEco Code is restarted",
 diff --git a/packages/tui/src/i18n/zh.json b/packages/tui/src/i18n/zh.json
-index e5177d8..7827d71 100644
+index e5177d8bd..7827d7190 100644
 --- a/packages/tui/src/i18n/zh.json
 +++ b/packages/tui/src/i18n/zh.json
 @@ -622,6 +622,24 @@
@@ -537,7 +2203,7 @@ index e5177d8..7827d71 100644
      "allow_until_restart": "这将允许 {{action}}，直到 DevEco Code 重启。",
      "allow_patterns_until_restart": "这将允许以下模式，直到 DevEco Code 重启",
 diff --git a/packages/tui/src/routes/session/index.tsx b/packages/tui/src/routes/session/index.tsx
-index ae8aece..486255f 100644
+index ae8aecea8..486255fa1 100644
 --- a/packages/tui/src/routes/session/index.tsx
 +++ b/packages/tui/src/routes/session/index.tsx
 @@ -2574,6 +2574,9 @@ function Write(props: ToolProps) {
@@ -581,7 +2247,7 @@ index ae8aece..486255f 100644
  }
  
 diff --git a/packages/tui/src/routes/session/permission.tsx b/packages/tui/src/routes/session/permission.tsx
-index 8efacc3..ed839bb 100644
+index 8efacc3db..ed839bbeb 100644
 --- a/packages/tui/src/routes/session/permission.tsx
 +++ b/packages/tui/src/routes/session/permission.tsx
 @@ -17,6 +17,7 @@ import { useTuiConfig } from "../../config"
@@ -691,7 +2357,7 @@ index 8efacc3..ed839bb 100644
                cmd: () => props.onSelect(props.escapeKey!),
              },
 diff --git a/packages/ui/src/components/message-part.tsx b/packages/ui/src/components/message-part.tsx
-index bbc3d29..0f0f4d7 100644
+index bbc3d2956..0f0f4d79f 100644
 --- a/packages/ui/src/components/message-part.tsx
 +++ b/packages/ui/src/components/message-part.tsx
 @@ -1325,7 +1325,8 @@ export function registerTool(input: { name: string; render?: ToolComponent }) {
@@ -775,101 +2441,3 @@ index bbc3d29..0f0f4d7 100644
                </div>
              </ToolFileAccordion>
            </Show>
-diff --git a/packages/core/src/util/deltabox-review.ts b/packages/core/src/util/deltabox-review.ts
-new file mode 100644
-index 0000000..45ac0ba
---- /dev/null
-+++ b/packages/core/src/util/deltabox-review.ts
-@@ -0,0 +1,36 @@
-+export type DeltaboxChange = {
-+  path: string
-+  kind: "added" | "modified" | "deleted"
-+  added_lines: number
-+  removed_lines: number
-+  is_binary: boolean
-+}
-+
-+// Permission metadata can also come from third-party plugins or older sessions.
-+// Both renderers use the same validation before displaying a review summary.
-+export function deltaboxReview(metadata: Record<string, unknown> = {}) {
-+  const changes = Array.isArray(metadata.changes) ? metadata.changes.filter(isChange) : []
-+  const mode = metadata.reviewMode === "tool" || metadata.reviewMode === "risky" ? metadata.reviewMode : "task"
-+  const count = nonnegative(metadata.pendingChanges) ? metadata.pendingChanges : changes.length
-+  return { changes, mode, count }
-+}
-+
-+function nonnegative(value: unknown): value is number {
-+  return typeof value === "number" && Number.isSafeInteger(value) && value >= 0
-+}
-+
-+function isChange(value: unknown): value is DeltaboxChange {
-+  if (!value || typeof value !== "object") return false
-+  return (
-+    "path" in value &&
-+    typeof value.path === "string" &&
-+    "kind" in value &&
-+    (value.kind === "added" || value.kind === "modified" || value.kind === "deleted") &&
-+    "added_lines" in value &&
-+    nonnegative(value.added_lines) &&
-+    "removed_lines" in value &&
-+    nonnegative(value.removed_lines) &&
-+    "is_binary" in value &&
-+    typeof value.is_binary === "boolean"
-+  )
-+}
-diff --git a/packages/opencode/src/session/stopping.ts b/packages/opencode/src/session/stopping.ts
-new file mode 100644
-index 0000000..cdd11ea
---- /dev/null
-+++ b/packages/opencode/src/session/stopping.ts
-@@ -0,0 +1,50 @@
-+import { Effect } from "effect"
-+import { EffectBridge } from "@/effect/bridge"
-+import { InstanceState } from "@/effect/instance-state"
-+import { Plugin } from "@/plugin"
-+import { Permission } from "@/permission"
-+import { Agent } from "@/agent/agent"
-+import { Session } from "./session"
-+import { SessionID, MessageID } from "./schema"
-+
-+export const run = Effect.fn("SessionStopping.run")(function* (input: {
-+  sessionID: SessionID
-+  messageID: MessageID
-+  agent: string
-+}) {
-+  const plugin = yield* Plugin.Service
-+  const permission = yield* Permission.Service
-+  const bridge = yield* EffectBridge.make()
-+  const ctx = yield* InstanceState.context
-+  const session = yield* (yield* Session.Service).get(input.sessionID).pipe(Effect.orDie)
-+  const agent = yield* (yield* Agent.Service).get(input.agent)
-+  yield* Effect.promise((signal) =>
-+    bridge.promise(
-+      plugin.trigger(
-+        "session.turn.stopping",
-+        {
-+          ...input,
-+          directory: ctx.directory,
-+          worktree: ctx.worktree,
-+          abort: signal,
-+          metadata() {},
-+          ask: (request) =>
-+            bridge.promise(
-+              permission
-+                .ask({
-+                  ...request,
-+                  sessionID: input.sessionID,
-+                  ruleset: Permission.merge(agent?.permission ?? [], session.permission ?? []),
-+                })
-+                .pipe(Effect.orDie),
-+              { signal },
-+            ),
-+        },
-+        {},
-+      ),
-+      { signal },
-+    ),
-+  )
-+})
-+
-+export * as SessionStopping from "./stopping"

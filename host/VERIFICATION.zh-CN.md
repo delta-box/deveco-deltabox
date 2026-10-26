@@ -1,4 +1,17 @@
-# DevEco Code 接入验证记录
+### 挂载适配器验证 — 2026-10-27
+
+平台：Windows x64，已安装 WinFsp。宿主固定版本未变。本节之后的记录对应 2026-10-21 的旧构建及其行为。
+
+- npm test：46 项通过。打包预览包含适配器源码和双语图文指导。
+- 干净的固定版本源码：补丁检查、冻结依赖安装、宿主包类型检查及完整测试宿主构建通过。
+- 宿主挂载语言服务、插件和审核测试：17 项通过（106 条断言），通过 DEVECO_TEST_DELTABOX_NATIVE=1 验证真实 Lite 格式化、诊断、提交及回滚。
+- 编译后的宿主：本地模型单轮冒烟通过。设置 DEVECO_E2E_KEEP=1 后，test:bundled-host 通过，检查了 Formatter 和 LSP 的私有视图工作目录，以及接受后的 write/edit/patch 文件内容。
+- Windows 限制：较广的多轮 HTTP 测试在清理临时目录时出现 EBUSY；聚焦测试未保留临时目录时也曾超时。这些结果不计为完整套件通过，清理问题仍需排查。
+- 适配器 SHA-256：4d575094aad60d5259b67bbc9712474c4cceea4974b503ee64ab63a3f8edb6fc；补丁 SHA-256：f32e2014277a57ef9db6943dd2a6b218e7e172ef3413c38c1c138022d603a427。
+
+当前内置适配器需显式执行 /sandbox-commit 或 /sandbox-abort，--auto 也不会自动接受修改。旧外部入口保留原有功能。未修改原生 LSP、Formatter 目录，也未新增语言服务插件 API。本次未重复历史浏览器、macOS、设备及 SDK 验证。
+
+ DevEco Code 接入验证记录
 
 [English](VERIFICATION.md) | 简体中文
 

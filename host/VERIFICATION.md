@@ -1,4 +1,17 @@
-# DevEco Code integration validation record
+### Mounted adapter validation — 2026-10-27
+
+Platform: Windows x64 with WinFsp. The pinned host revision remains unchanged. Records below this section describe the earlier 2026-10-21 build and its behavior.
+
+- npm test: 46 passed. Package dry-run includes adapter sources and both illustrated guides.
+- Clean pinned source: patch check, frozen dependency install, host package typecheck and complete test-host build passed.
+- Host mounted-language, plugin and review tests: 17 passed (106 expectations), including real Lite formatting, diagnostics, commit and rollback with DEVECO_TEST_DELTABOX_NATIVE=1.
+- Compiled host: single-turn local-model smoke passed. test:bundled-host passed with DEVECO_E2E_KEEP=1, checking Formatter and LSP working directories in the private view and accepted write/edit/patch contents.
+- Windows limitation: the broader multi-turn HTTP test failed with EBUSY during temporary-directory cleanup. The focused test also timed out without retaining its temporary directory. These are not recorded as full-suite passes; cleanup needs further investigation.
+- Adapter SHA-256: 4d575094aad60d5259b67bbc9712474c4cceea4974b503ee64ab63a3f8edb6fc; patch SHA-256: f32e2014277a57ef9db6943dd2a6b218e7e172ef3413c38c1c138022d603a427.
+
+The current built-in adapter retains changes for explicit /sandbox-commit or /sandbox-abort, even with --auto. The legacy external entry keeps its earlier feature set. Native LSP and Formatter directories and the language-service plugin API are unchanged. This run did not repeat the historical browser, macOS, device or SDK checks.
+
+ DevEco Code integration validation record
 
 English | [简体中文](VERIFICATION.zh-CN.md)
 

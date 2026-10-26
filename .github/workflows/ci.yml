@@ -38,3 +38,19 @@ jobs:
           git clone --no-checkout https://gitcode.com/openharmony-sig/deveco-code.git "$RUNNER_TEMP/deveco-code"
           git -C "$RUNNER_TEMP/deveco-code" checkout --detach abc2d62370d46e7102828eb9e1f1783f0dd7474f
       - run: node host/setup.mjs --source "$RUNNER_TEMP/deveco-code" --check
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.2
+      - name: Apply host patch and install bundled adapter
+        run: |
+          git -C "$RUNNER_TEMP/deveco-code" apply "$GITHUB_WORKSPACE/host/deveco-code.patch"
+          node --input-type=module -e 'import { installAdapter } from "./host/adapter.mjs"; installAdapter(process.env.RUNNER_TEMP + "/deveco-code")'
+      - name: Install host dependencies
+        working-directory: ${{ runner.temp }}/deveco-code
+        run: bun install --frozen-lockfile
+      - name: Check bundled adapter types
+        working-directory: ${{ runner.temp }}/deveco-code/packages/opencode
+        run: bun typecheck
+      - name: Test mounted language services and plugin loading
+        working-directory: ${{ runner.temp }}/deveco-code/packages/opencode
+        run: bun test --timeout 30000 test/plugin/deltabox-language.test.ts test/plugin/deltabox.test.ts test/plugin/deltabox-review.test.ts
