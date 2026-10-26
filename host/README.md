@@ -2,7 +2,7 @@
 
 English | [简体中文](README.zh-CN.md)
 
-The baseline is recorded in [upstream.json](upstream.json): DevEco Code `0.2.4`, source commit `abc2d62370d46e7102828eb9e1f1783f0dd7474f`. The complete integration requires both [deveco-code.patch](deveco-code.patch) and this plugin.
+The baseline is recorded in [upstream.json](upstream.json): DevEco Code `0.2.4`, source commit `abc2d62370d46e7102828eb9e1f1783f0dd7474f`. The complete integration requires [deveco-code.patch](deveco-code.patch) and the adapter sources in `host/adapter/`.
 
 The patch includes:
 
@@ -10,10 +10,16 @@ The patch includes:
 - Direct results from `command.execute.before`: user-command results enter the session history without triggering another model inference.
 - `shellEnv()` for plugin tools: reuses the host's CLI environment injection.
 - Consistent override order in the tool registry: the named `read` entry point used for attachments also uses the plugin implementation, and model names no longer hide plugin-provided file tools.
-- A dedicated “Review changes” panel in the Web UI and TUI: review mode, per-file addition/deletion summaries, and “Accept / Roll back” actions, while preserving the host's auto-accept policy.
+- A dedicated “Review changes” panel in the Web UI and TUI: review mode, per-file addition/deletion summaries, and “Accept / Roll back” actions.
 - Write diffs in the TUI and shared Web UI, plus native card mappings for `shell` and `spec_write`.
 
-Auto-accept behavior is preserved. DevEco CLI itself needs no changes: the AI launches it through the Deltabox shell, and generated files and command changes within the project belong to the same review scope.
+Deltabox changes remain pending until `/sandbox-commit` or `/sandbox-abort`, including when the host runs with `--auto`. DevEco CLI itself needs no changes: the AI launches it through the Deltabox shell, and generated files and command changes within the project belong to the same review scope.
+
+## Built-in mounted adapter
+
+Setup copies `host/adapter/` into the pinned host before building. These sources reuse native LSP and Formatter modules through direct imports and require no additional plugin API. The patch adds opt-in built-in registration, the query reuse function and runtime packaging. The launcher enables `deltabox: true` instead of loading the legacy external entry. Do not register both. LSP and formatting remain opt-in and use Lite’s mounted view. Git snapshots remain disabled.
+
+The adapter source hash is recorded alongside the patch hash in `deltabox-build.json`. Existing differing adapter files cause setup to fail rather than overwrite local changes. See the [current usage guide](../docs/deltabox.md) for the bundled integration and [legacy plugin instructions](../docs/legacy-plugin.md) for the old external entry.
 
 ## Build
 
@@ -38,11 +44,11 @@ Launch from the target project directory:
 
 ```sh
 node /absolute/path/to/deveco-deltabox/bin/deveco-deltabox.mjs
-# Use the host's auto-accept mode.
+# Host permission auto-accept; sandbox changes still require manual commit.
 node /absolute/path/to/deveco-deltabox/bin/deveco-deltabox.mjs run --auto "Your task"
 ```
 
-The launcher appends the plugin through process-local `DEVECO_CONFIG_CONTENT` and disables automatic updates for this custom host. Any existing configuration in that environment variable must be a JSON object. Set `DEVECO_DELTABOX_BIN` to use another patched binary. The official `deveco` installation and your global configuration are left intact.
+The launcher enables the built-in adapter through process-local `DEVECO_CONFIG_CONTENT` and disables automatic updates for this custom host. Any existing configuration in that environment variable must be a JSON object. Set `DEVECO_DELTABOX_BIN` to use another patched binary. The official `deveco` installation and your global configuration are left intact.
 
 ## Regression tests
 
@@ -59,7 +65,9 @@ Full HTTP conversation tests use isolated temporary directories and a local mock
 
 ```sh
 node host/setup.mjs --source /absolute/path/to/deveco-code --test-build
-DEVECO_BIN="$PWD/.local/deveco-code-test/bin/deveco" npm run test:host-e2e
+DEVECO_BIN="$PWD/.local/deveco-code-test/bin/deveco" npm run test:bundled-host
 ```
+
+The `test:host` and `test:host-e2e` scripts exercise the legacy external entry. On Windows, temporary-directory cleanup may hang; `DEVECO_E2E_KEEP=1` retains the fixture directory for inspection.
 
 Normal builds retain the product agreement flow; real use follows DevEco's own confirmation process. Compilation, device installation, and signing still require local SDKs, devices, and accounts.

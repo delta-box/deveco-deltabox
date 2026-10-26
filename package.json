@@ -18,7 +18,9 @@
     "host/*.md",
     "README.md",
     "README.zh-CN.md",
-    "host/UPSTREAM-LICENSE"
+    "host/UPSTREAM-LICENSE",
+    "host/adapter",
+    "docs"
   ],
   "bin": {
     "deveco-deltabox": "bin/deveco-deltabox.mjs"
@@ -33,7 +35,8 @@
     "test:host": "npm run build && node --test tests/host-smoke.mjs",
     "test:host-e2e": "npm run build && node --test tests/host-e2e.mjs",
     "setup:host": "node host/setup.mjs",
-    "prepack": "npm run build"
+    "prepack": "npm run build",
+    "test:bundled-host": "node --test tests/bundled-host.integration.mjs"
   },
   "dependencies": {
     "@opencode-ai/plugin": "1.17.9",
